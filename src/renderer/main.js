@@ -9,6 +9,7 @@ import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import App from './App'
 import router from './router'
 import store from './store'
+import '@/common/icons' // icon
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 
