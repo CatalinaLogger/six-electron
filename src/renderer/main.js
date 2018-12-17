@@ -1,19 +1,21 @@
 import Vue from 'vue'
+import App from './App'
+import store from './store'
+import router from './router'
 
 import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 
-import App from './App'
-import router from './router'
-import store from './store'
+import '@/common/style/index.styl'
 import '@/common/icons' // icon
+import '@/auth' // Auth control
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 
-Vue.use(ElementUI, { locale })
+Vue.use(ElementUI, { size: 'small', locale })
 
 Vue.config.productionTip = false
 

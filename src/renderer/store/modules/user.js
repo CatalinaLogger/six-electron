@@ -1,25 +1,16 @@
 import { login, reset, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken, setUsername, removeUsername, setPassword, removePassword, setRemember } from '@/common/utils/auth'
 
-const user = {
+export default {
   state: {
     token: getToken(),
-    socket: {},
-    notice: {},
     name: '',
     avatar: '',
     roles: []
   },
-
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
-    },
-    SET_SOCKET: (state, socket) => {
-      state.socket = socket
-      socket.onmessage = (event) => {
-        state.notice = JSON.parse(event.data)
-      }
     },
     SET_NAME: (state, name) => {
       state.name = name
@@ -31,7 +22,6 @@ const user = {
       state.roles = roles
     }
   },
-
   actions: {
     // 用户登录
     Login ({ commit }, userInfo) {
@@ -73,10 +63,9 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
           const data = response.data
-          commit('SET_ROLES', data.roles)
+          commit('SET_ROLES', data.role)
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
-          commit('SET_SOCKET', new WebSocket(`${process.env.WEB_SOCKET}/${state.token}`))
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -108,5 +97,3 @@ const user = {
     }
   }
 }
-
-export default user

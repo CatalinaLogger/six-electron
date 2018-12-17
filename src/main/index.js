@@ -20,15 +20,16 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 500,
+    width: 400,
+    height: 360,
+    minWidth: 400,
+    minHeight: 360,
+    backgroundColor: '#6266ff',
     useContentSize: true,
-    width: 500,
     frame: false,
     autoHideMenuBar: true // 自动隐藏菜单栏, 除非按了Alt键. 默认值为false
   })
-
   mainWindow.loadURL(winURL)
-
   mainWindow.on('closed', () => {
     mainWindow = null
   })
