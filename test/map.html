@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Leaflet1</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise"></script>
+  <style TYPE="text/css">
+    body {
+      margin: 0px;
+      padding: 0px;
+    }
+    /**
+     * 单独设置mapid为100%不显示，可能float坍塌
+     */
+
+    html,
+    body,
+    #mapDiv {
+      height: 100%;
+      width: 100%;
+    }
+    .leaflet-control-container {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+<div id="mapDiv">
+</div>
+</body>
+<script>
+  var layer = L.tileLayer('https://mt{s}.google.cn/maps/vt?lyrs=y&hl=zh-CN&gl=CN&&x={x}&y={y}&z={z}&scale=1', {
+    subdomains: '0123',
+    minZoom: 3,
+    maxZoom: 18
+  });
+
+  var maxBounds = L.latLngBounds(L.latLng(90, 180), L.latLng(-90, -180)) // 构建视图限制范围
+
+  var map = L.map('mapDiv', {maxBounds: maxBounds}).setView([28.21667, 113.00000], 12);
+
+  L.control.scale({'position': 'bottomleft', 'metric': true, 'imperial': false}).addTo(map);
+
+  map.addLayer(layer);
+</script>
+
+</html>

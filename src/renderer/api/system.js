@@ -9,11 +9,11 @@ export function getDeptTree () {
 }
 
 /** 获取用户区域列表 */
-export function getDeptList (userId) {
+export function getDeptList (userId, child) {
   return request({
     url: '/system/dept/select/list',
     method: 'get',
-    params: {userId}
+    params: {userId, child}
   })
 }
 
@@ -128,6 +128,18 @@ export function updateUser (user) {
       mail: user.mail,
       remark: user.remark,
       deptKeys: user.deptKeys.toString()
+    }
+  })
+}
+
+/** 修改密码 */
+export function updatePassword ({ oldPassword, newPassword }) {
+  return request({
+    url: 'system/user/password/update',
+    method: 'put',
+    params: {
+      oldPassword,
+      newPassword
     }
   })
 }

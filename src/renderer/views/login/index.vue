@@ -1,5 +1,5 @@
 <template>
-  <div class="login" style="-webkit-app-region: drag">
+  <div class="login" style="-webkit-app-region: drag" v-if="show">
     <div class="head">
       <div class="title">
         <span class="en">BDMC</span>
@@ -20,9 +20,9 @@
         </el-form-item>
         <el-button type="primary" style="width: 100%;" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
         <div class="option">
-          <el-checkbox v-model="loginModel.auto">自动登录</el-checkbox>
           <el-checkbox v-model="loginModel.remember">记住密码</el-checkbox>
-          <div class="forget">忘记密码？</div>
+          <el-checkbox v-model="loginModel.automation">自动登录</el-checkbox>
+          <div class="forget" @click="handleForget">忘记密码？</div>
         </div>
       </el-form>
     </div>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { getUsername, getPassword, getRemember } from '@/common/utils/auth'
+import {getUsername, getPassword, getAutomation, getRemember} from '@/common/utils/auth'
 
 export default {
   data () {
@@ -38,14 +38,15 @@ export default {
       loginModel: {
         username: getUsername(),
         password: getPassword(),
-        auto: false,
+        automation: getAutomation(),
         remember: getRemember()
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', message: '账号不能为空' }],
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
       },
-      loading: false
+      loading: false,
+      show: true
     }
   },
   mounted () {
@@ -58,6 +59,7 @@ export default {
           this.loading = true
           this.$store.dispatch('Login', this.loginModel).then(() => {
             this.loading = false
+            this.show = false
             this.$router.push({ path: '/' })
           }).catch(() => {
             this.loading = false
@@ -66,6 +68,21 @@ export default {
           console.log('error submit!!')
           return false
         }
+      })
+    },
+    handleForget () {
+      let main = this.$electron.remote.getCurrentWindow()
+      let BrowserWindow = this.$electron.remote.BrowserWindow
+      let forget = new BrowserWindow({
+        parent: main,
+        title: '密码找回',
+        useContentSize: true,
+        autoHideMenuBar: true
+      })
+      forget.show()
+      forget.loadURL('http://localhost:3000/reset')
+      forget.on('closed', () => {
+        forget = null
       })
     },
     hidden () {
@@ -78,8 +95,14 @@ export default {
     },
     _initWindow () {
       let main = this.$electron.remote.getCurrentWindow()
+      main.setMinimumSize(400, 360)
       main.setSize(400, 360)
       main.center()
+      if (this.loginModel.automation) {
+        setTimeout(() => {
+          this.handleLogin()
+        }, 2000)
+      }
     }
   }
 }
@@ -144,7 +167,7 @@ export default {
         cursor pointer
         &:hover
           color #409eff
-    input:-webkit-autofill
+    input:-webkit-automationfill
       -webkit-box-shadow 0 0 0px 1000px #ffffff inset !important
       -webkit-text-fill-color #000000 !important
     input

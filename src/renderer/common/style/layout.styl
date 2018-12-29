@@ -42,7 +42,16 @@ $HoverBg = #001528
             transform rotate(0deg)
       .tool-bar
         flex-grow 1
-      .change, i
+      .avatar
+        position relative
+        width 40px
+        height 40px
+        margin-right 10px
+        overflow hidden
+        img
+          width 100%
+          height 100%
+      .change, .hidden, .closed
         margin 5px 0
         width 30px
         height 30px
@@ -83,3 +92,6 @@ $HoverBg = #001528
             display none
     .app-body
       margin-left 64px
+
+.leaflet-control-container
+  display none

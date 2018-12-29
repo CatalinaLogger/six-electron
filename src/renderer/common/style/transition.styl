@@ -11,15 +11,24 @@
 
 /*fade-transform*/
 .fade-transform-leave-active,
-.fade-transform-enter-active {
-  transition: all .3s;
-}
-.fade-transform-enter {
-  opacity: 0;
-  transform: translateX(-30px);
-}
-.fade-transform-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
+.fade-transform-enter-active
+  transition all .3s
 
+.fade-transform-enter
+  opacity 0
+  transform translateX(-30px)
+
+.fade-transform-leave-to
+  opacity 0
+  transform translateX(30px)
+
+/*fade-map*/
+.fade-map-leave-active,
+.fade-map-enter-active
+  transition all 1s
+
+.fade-map-enter
+  transform translateY(calc(100vh - 40px))
+
+.fade-map-leave-to
+  transform translateY(calc(100vh - 40px))

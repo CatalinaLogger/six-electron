@@ -1,5 +1,6 @@
 import request from '@/common/utils/request'
 
+/** 用户登录 */
 export function login (username, password) {
   return request({
     url: '/system/login',
@@ -11,6 +12,7 @@ export function login (username, password) {
   })
 }
 
+/** 二步登录 获取权限数据 */
 export function getInfo (token) {
   return request({
     url: '/system/user/info',
@@ -19,36 +21,10 @@ export function getInfo (token) {
   })
 }
 
-export function reset (mail, code) {
-  return request({
-    url: '/auth/reset',
-    method: 'put',
-    params: {
-      mail,
-      code
-    }
-  })
-}
-
+/** 用户登出 */
 export function logout () {
   return request({
     url: '/system/user/logout',
     method: 'post'
-  })
-}
-
-export function getDaily (date) {
-  return request({
-    url: '/auth/daily',
-    method: 'get',
-    params: { date }
-  })
-}
-
-export function getImages (origin) {
-  return request({
-    url: '/auth/images',
-    method: 'get',
-    params: { origin }
   })
 }

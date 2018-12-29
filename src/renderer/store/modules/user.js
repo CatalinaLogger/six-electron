@@ -1,5 +1,5 @@
-import { login, reset, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken, setUsername, removeUsername, setPassword, removePassword, setRemember } from '@/common/utils/auth'
+import { login, logout, getInfo } from '@/api/login'
+import { getToken, setToken, removeToken, setUsername, removeUsername, setPassword, removePassword, setAutomation, setRemember } from '@/common/utils/auth'
 
 export default {
   state: {
@@ -33,25 +33,14 @@ export default {
           if (userInfo.remember) {
             setUsername(userInfo.username)
             setPassword(userInfo.password)
-            setRemember(userInfo.remember)
           } else {
             removeUsername()
             removePassword()
-            setRemember(userInfo.remember)
           }
+          setAutomation(userInfo.automation)
+          setRemember(userInfo.remember)
           commit('SET_TOKEN', data)
           resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-
-    // 重置密码
-    Reset ({ commit }, resetInfo) {
-      return new Promise((resolve, reject) => {
-        reset(resetInfo.mail, resetInfo.code).then(response => {
-          resolve(response)
         }).catch(error => {
           reject(error)
         })
@@ -74,11 +63,12 @@ export default {
     },
 
     // 登出
-    LogOut ({ commit, state }) {
+    LogOut ({ commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout().then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
+          setAutomation(false)
           removeToken()
           resolve()
         }).catch(error => {

@@ -3,6 +3,7 @@ import storage from 'good-storage'
 const TokenKey = '__User-Token__'
 const username = '__User-name__'
 const password = '__Pass-word__'
+const automation = '__Automation__'
 const remember = '__Remember__'
 
 export function getToken () {
@@ -33,6 +34,16 @@ export function setPassword (arg) {
 }
 export function removePassword () {
   return storage.remove(password)
+}
+
+export function getAutomation () {
+  return storage.get(automation)
+}
+export function setAutomation (arg) {
+  return storage.set(automation, arg)
+}
+export function removeAutomation () {
+  return storage.remove(automation)
 }
 
 export function getRemember () {

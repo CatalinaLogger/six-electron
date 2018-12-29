@@ -53,7 +53,7 @@
         <div class="operate">
           <el-input size="mini" v-model="roleUser.query" placeholder="姓名/手机/邮箱" clearable @change="changeQuery"></el-input>
           <el-button size="mini" type="primary" plain icon="el-icon-circle-plus-outline" @click="selectUser" :disabled="!role.edit">添加成员</el-button>
-          <el-button size="mini" type="primary" plain icon="el-icon-circle-plus-outline" @click="deleteRoleUser" :disabled="!role.edit">批量移除</el-button>
+          <el-button size="mini" type="primary" plain icon="el-icon-remove-outline" @click="deleteRoleUser" :disabled="!role.edit">批量移除</el-button>
         </div>
       </div>
       <el-scrollbar class="user-body-wrapper six-table flex-table" wrap-class="scrollbar-wrapper">
