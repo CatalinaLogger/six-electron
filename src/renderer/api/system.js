@@ -73,18 +73,18 @@ export function downDept (deptId) {
 }
 
 /** 根据区域分页获取用户列表 */
-export function getDeptUserPage (deptId, query, page, size) {
+export function getUserPageDept (deptId, query, page, size) {
   return request({
-    url: '/system/user/dept/select/page',
+    url: '/system/user/select/page/dept',
     method: 'get',
     params: {deptId, query, page, size}
   })
 }
 
 /** 根据角色分页获取用户列表 bound (true：已绑定/false：未绑定) */
-export function getRoleUserPage (bound, roleId, query, page, size) {
+export function getUserPageRole (bound, roleId, query, page, size) {
   return request({
-    url: '/system/user/role/select/page',
+    url: '/system/user/select/page/role',
     method: 'get',
     params: {bound, roleId, query, page, size}
   })

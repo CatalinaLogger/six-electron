@@ -111,3 +111,28 @@
     >.el-tree-node__label
       color white
 
+// 自定义表格样式
+.six-row
+  display flex
+  align-items center
+  justify-content space-around
+  height 40px
+  font-size 14px
+  &.active
+    color #409eff
+    background #d7eaff !important
+  &.title
+    color white
+    background #409eff !important
+  &:hover
+    background #d7eaff
+  &:nth-child(even)
+    background linear-gradient(90deg, #fff, #eee)
+    &:hover
+      background #d7eaff
+  div
+    flex 1
+    text-align center
+    white-space nowrap
+    text-overflow ellipsis
+    overflow hidden

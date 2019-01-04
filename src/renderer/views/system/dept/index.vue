@@ -75,7 +75,7 @@
 
 <script>
 import TreeTable from '@/components/tree-table'
-import {getDeptTree, getDeptUserPage, insertDept, updateDept, deleteDept, upDept, downDept} from '@/api/system'
+import {getDeptTree, getUserPageDept, insertDept, updateDept, deleteDept, upDept, downDept} from '@/api/system'
 
 export default {
   name: 'system-dept',
@@ -195,7 +195,7 @@ export default {
     },
     _getDeptUserList () {
       this.userData = []
-      getDeptUserPage(this.deptModel.id, this.query, 1, 20).then(res => {
+      getUserPageDept(this.deptModel.id, this.query, 1, 20).then(res => {
         if (res.data.data) {
           res.data.data.forEach(user => {
             this.userData.push({

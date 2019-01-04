@@ -25,8 +25,8 @@
         </div>
       </div>
       <el-scrollbar class="user-body-wrapper" wrap-class="scrollbar-wrapper">
-        <div class="user title"><div>姓名</div><div>手机</div><div>邮箱</div><div>状态</div><div>操作</div></div>
-        <div class="user" v-for="user in userList" :key="user.id">
+        <div class="six-row title"><div>姓名</div><div>手机</div><div>邮箱</div><div>状态</div><div>操作</div></div>
+        <div class="six-row" v-for="user in userList" :key="user.id">
           <div>{{user.name}}</div>
           <div>{{user.phone}}</div>
           <div>{{user.mail}}</div>
@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import {getDeptTree, getDeptUserPage, getDeptList, existsUser, insertUser, updateUser, stopUser, startUser, deleteUser} from '@/api/system'
+import {getDeptTree, getUserPageDept, getDeptList, existsUser, insertUser, updateUser, stopUser, startUser, deleteUser} from '@/api/system'
 
 export default {
   name: 'system-user',
@@ -294,7 +294,7 @@ export default {
       this._getUserList()
     },
     _getUserList () {
-      getDeptUserPage(this.dept.id, this.query, this.currentPage, this.pageSize).then(res => {
+      getUserPageDept(this.dept.id, this.query, this.currentPage, this.pageSize).then(res => {
         this.totalRecode = res.data.total
         this.userList = res.data.data
       })
@@ -342,30 +342,6 @@ export default {
     border-right 1px solid #eee
   .user-wrapper
     flex-grow 1
-    .user
-      display flex
-      align-items center
-      justify-content space-around
-      height 40px
-      font-size 14px
-      &.active
-        color #409eff
-        background #d7eaff !important
-      &.title
-        color white
-        background #409eff !important
-      &:hover
-        background #d7eaff
-      &:nth-child(even)
-        background linear-gradient(90deg, #fff, #eee)
-        &:hover
-          background #d7eaff
-      div
-        flex 1
-        text-align center
-        white-space nowrap
-        text-overflow ellipsis
-        overflow hidden
 .dept-block
   padding 5px
   margin-right 5px

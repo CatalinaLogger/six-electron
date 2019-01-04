@@ -31,8 +31,8 @@
         </div>
       </div>
       <el-scrollbar class="role-body-wrapper" wrap-class="scrollbar-wrapper">
-        <div class="body-row title"><div>角色名称</div><div>更新时间</div><div>更新人员</div><div>操作</div></div>
-        <div class="body-row" v-for="item in role.children" :key="item.id">
+        <div class="six-row title"><div>角色名称</div><div>更新时间</div><div>更新人员</div><div>操作</div></div>
+        <div class="six-row" v-for="item in role.children" :key="item.id">
           <div>{{item.name}}</div>
           <div>{{item.operateTime}}</div>
           <div>{{item.operateName}}</div>
@@ -165,242 +165,242 @@
 </template>
 
 <script>
-  import {getAuthTree, getRoleTree, getAuthList, insertRole, updateRole, deleteRole, upRole, downRole, getRoleUserPage, insertRoleUser, deleteRoleUser} from '@/api/system'
+import {getAuthTree, getRoleTree, getAuthList, insertRole, updateRole, deleteRole, upRole, downRole, getUserPageRole, insertRoleUser, deleteRoleUser} from '@/api/system'
 
-  export default {
-    name: 'system-role',
-    data () {
-      return {
-        roleTree: [],
-        roleProps: {
-          children: 'children',
-          label: 'name'
-        },
-        authTree: [],
-        authProps: {
-          children: 'children',
-          label: 'name'
-        },
-        role: {},
-        roleModel: {parent: {}, authKeys: []},
-        roleRules: {name: [{required: true, trigger: 'blur', message: '名称不能为空'}]},
-        roleTitle: '',
-        roleVisible: false,
-        deleteVisible: false,
-        roleUser: {
-          query: '',
-          currentPage: 1,
-          pageSize: 20,
-          totalRecode: 0,
-          userList: [], // 当前选中角色绑定的用户
-          userKeys: [] // 选中的用户ID数组
-        },
-        roleNone: {
-          query: '',
-          currentPage: 1,
-          pageSize: 20,
-          totalRecode: 0,
-          userList: [], // 当前选中角色未绑定的用户
-          userKeys: [] // 选中的用户ID数组
-        },
-        userVisible: false
+export default {
+  name: 'system-role',
+  data () {
+    return {
+      roleTree: [],
+      roleProps: {
+        children: 'children',
+        label: 'name'
+      },
+      authTree: [],
+      authProps: {
+        children: 'children',
+        label: 'name'
+      },
+      role: {},
+      roleModel: {parent: {}, authKeys: []},
+      roleRules: {name: [{required: true, trigger: 'blur', message: '名称不能为空'}]},
+      roleTitle: '',
+      roleVisible: false,
+      deleteVisible: false,
+      roleUser: {
+        query: '',
+        currentPage: 1,
+        pageSize: 20,
+        totalRecode: 0,
+        userList: [], // 当前选中角色绑定的用户
+        userKeys: [] // 选中的用户ID数组
+      },
+      roleNone: {
+        query: '',
+        currentPage: 1,
+        pageSize: 20,
+        totalRecode: 0,
+        userList: [], // 当前选中角色未绑定的用户
+        userKeys: [] // 选中的用户ID数组
+      },
+      userVisible: false
+    }
+  },
+  mounted () {
+    this._initData()
+    this._getRoleTree()
+  },
+  methods: {
+    roleClick (role) {
+      this.role = role
+      if (this.role.parentId) {
+        this._getUserListRole()
       }
     },
-    mounted () {
-      this._initData()
-      this._getRoleTree()
-    },
-    methods: {
-      roleClick (role) {
-        this.role = role
-        if (this.role.parentId) {
-          this._getRoleUserList()
-        }
-      },
-      insertRole (role) {
-        if (role) {
-          this.roleModel = {parent: role, authKeys: []}
-          this.roleTitle = '新增角色'
-        } else {
-          this.roleModel = {parent: {}, authKeys: []}
-          this.roleTitle = '新增角色组'
-        }
-        this.roleVisible = true
-      },
-      updateRole (role) {
-        if (role.parentId) {
-          let parent = this.roleTree.filter(item => {
-            return item.id === role.parentId
-          })[0]
-          this.roleModel = {parent: {id: parent.id, name: parent.name}, authKeys: []}
-          Object.assign(this.roleModel, role)
-          getAuthList(role.id).then(res => {
-            res.data.forEach(key => {
-              this.$refs.roleAuthTree.setChecked(key, true)
-            })
-          })
-          this.roleTitle = '编辑角色'
-        } else {
-          this.roleModel = {parent: {}, authKeys: []}
-          Object.assign(this.roleModel, role)
-          this.roleTitle = '编辑角色组'
-        }
-        this.roleVisible = true
-      },
-      deleteRole (role) {
-        Object.assign(this.roleModel, role)
-        if (role.parentId) {
-          this.roleModel.typeName = '角色'
-        } else {
-          this.roleModel.typeName = '角色组'
-        }
-        this.deleteVisible = true
-      },
-      upRole (role) {
-        upRole(role.id).then(() => {
-          this._getRoleTree()
-        })
-      },
-      downRole (role) {
-        downRole(role.id).then(() => {
-          this._getRoleTree()
-        })
-      },
-      submitRoleModel () {
-        this.$refs.roleForm.validate(valid => {
-          if (valid) {
-            if (this.roleModel.parent.id) {
-              this.roleModel.authKeys = this.$refs.roleAuthTree.getCheckedKeys().concat(this.$refs.roleAuthTree.getHalfCheckedKeys())
-            }
-            if (!this.roleModel.id) {
-              insertRole(this.roleModel).then(() => {
-                this._getRoleTree()
-                this.roleVisible = false
-              })
-            } else {
-              updateRole(this.roleModel).then(() => {
-                this._getRoleTree()
-                this.roleVisible = false
-              })
-            }
-          }
-        })
-      },
-      deleteRoleModel () {
-        deleteRole(this.roleModel.id).then(() => {
-          this._getRoleTree()
-          this.deleteVisible = false
-        })
-      },
-      selectUser () {
-        this._getRoleNoneList()
-        this.userVisible = true
-      },
-      insertRoleUser () {
-        insertRoleUser(this.role.id, this.roleNone.userKeys).then(() => {
-          this._getRoleUserList()
-          this.userVisible = false
-        })
-      },
-      deleteRoleUser () {
-        deleteRoleUser(this.role.id, this.roleUser.userKeys).then(() => {
-          this._getRoleUserList()
-        })
-      },
-      roleNoneChange (selection) {
-        this.roleNone.userKeys = selection.map(item => {
-          return item.id
-        })
-      },
-      roleUserChange (selection) {
-        this.roleUser.userKeys = selection.map(item => {
-          return item.id
-        })
-      },
-      changeQuery (val) {
-        if (this.userVisible) {
-          this.roleNone.query = val
-          this._getRoleNoneList()
-        } else {
-          this.roleUser.query = val
-          this._getRoleUserList()
-        }
-      },
-      handleSizeChange (val) {
-        if (this.userVisible) {
-          if (val > this.pageSize) {
-            this.roleNone.currentPage = Math.ceil(this.totalRecode / val)
-          }
-          this.roleNone.pageSize = val
-          this._getRoleNoneList()
-        } else {
-          if (val > this.pageSize) {
-            this.roleUser.currentPage = Math.ceil(this.totalRecode / val)
-          }
-          this.roleUser.pageSize = val
-          this._getRoleUserList()
-        }
-      },
-      handleCurrentChange (val) {
-        if (this.userVisible) {
-          this.roleNone.currentPage = val
-          this._getRoleNoneList()
-        } else {
-          this.roleUser.currentPage = val
-          this._getRoleUserList()
-        }
-      },
-      closeRoleForm () {
+    insertRole (role) {
+      if (role) {
+        this.roleModel = {parent: role, authKeys: []}
+        this.roleTitle = '新增角色'
+      } else {
         this.roleModel = {parent: {}, authKeys: []}
-        this.$refs.roleForm.clearValidate()
-        try {
-          this.$refs.roleAuthTree.setCheckedKeys([])
-        } catch (e) {
-        }
-      },
-      closeUserForm () {
-        this.roleNone.query = ''
-        this.roleNone.userList = []
-        this.roleNone.userKeys = []
-      },
-      _getRoleTree () {
-        getRoleTree().then(res => {
-          this.roleTree = res.data
-          if (this.roleTree.length) {
-            setTimeout(() => {
-              let arr = this.roleTree.filter(item => {
-                return item.id === this.role.id
-              })
-              if (arr.length) {
-                this.role = arr[0]
-                this.$refs.roleTree.setCurrentNode(this.role)
-              } else {
-                this.role = this.roleTree[0]
-                this.$refs.roleTree.setCurrentNode(this.role)
-              }
-            }, 10)
-          }
-        })
-      },
-      _getRoleUserList () {
-        getRoleUserPage(true, this.role.id, this.roleUser.query, this.roleUser.currentPage, this.roleUser.pageSize).then(res => {
-          this.roleUser.totalRecode = res.data.total
-          this.roleUser.userList = res.data.data
-        })
-      },
-      _getRoleNoneList () {
-        getRoleUserPage(false, this.role.id, this.roleNone.query, this.roleNone.currentPage, this.roleNone.pageSize).then(res => {
-          this.roleNone.totalRecode = res.data.total
-          this.roleNone.userList = res.data.data
-        })
-      },
-      _initData () {
-        getAuthTree().then(res => {
-          this.authTree = res.data
-        })
+        this.roleTitle = '新增角色组'
       }
+      this.roleVisible = true
+    },
+    updateRole (role) {
+      if (role.parentId) {
+        let parent = this.roleTree.filter(item => {
+          return item.id === role.parentId
+        })[0]
+        this.roleModel = {parent: {id: parent.id, name: parent.name}, authKeys: []}
+        Object.assign(this.roleModel, role)
+        getAuthList(role.id).then(res => {
+          res.data.forEach(key => {
+            this.$refs.roleAuthTree.setChecked(key, true)
+          })
+        })
+        this.roleTitle = '编辑角色'
+      } else {
+        this.roleModel = {parent: {}, authKeys: []}
+        Object.assign(this.roleModel, role)
+        this.roleTitle = '编辑角色组'
+      }
+      this.roleVisible = true
+    },
+    deleteRole (role) {
+      Object.assign(this.roleModel, role)
+      if (role.parentId) {
+        this.roleModel.typeName = '角色'
+      } else {
+        this.roleModel.typeName = '角色组'
+      }
+      this.deleteVisible = true
+    },
+    upRole (role) {
+      upRole(role.id).then(() => {
+        this._getRoleTree()
+      })
+    },
+    downRole (role) {
+      downRole(role.id).then(() => {
+        this._getRoleTree()
+      })
+    },
+    submitRoleModel () {
+      this.$refs.roleForm.validate(valid => {
+        if (valid) {
+          if (this.roleModel.parent.id) {
+            this.roleModel.authKeys = this.$refs.roleAuthTree.getCheckedKeys().concat(this.$refs.roleAuthTree.getHalfCheckedKeys())
+          }
+          if (!this.roleModel.id) {
+            insertRole(this.roleModel).then(() => {
+              this._getRoleTree()
+              this.roleVisible = false
+            })
+          } else {
+            updateRole(this.roleModel).then(() => {
+              this._getRoleTree()
+              this.roleVisible = false
+            })
+          }
+        }
+      })
+    },
+    deleteRoleModel () {
+      deleteRole(this.roleModel.id).then(() => {
+        this._getRoleTree()
+        this.deleteVisible = false
+      })
+    },
+    selectUser () {
+      this._getUserListNone()
+      this.userVisible = true
+    },
+    insertRoleUser () {
+      insertRoleUser(this.role.id, this.roleNone.userKeys).then(() => {
+        this._getUserListRole()
+        this.userVisible = false
+      })
+    },
+    deleteRoleUser () {
+      deleteRoleUser(this.role.id, this.roleUser.userKeys).then(() => {
+        this._getUserListRole()
+      })
+    },
+    roleNoneChange (selection) {
+      this.roleNone.userKeys = selection.map(item => {
+        return item.id
+      })
+    },
+    roleUserChange (selection) {
+      this.roleUser.userKeys = selection.map(item => {
+        return item.id
+      })
+    },
+    changeQuery (val) {
+      if (this.userVisible) {
+        this.roleNone.query = val
+        this._getUserListNone()
+      } else {
+        this.roleUser.query = val
+        this._getUserListRole()
+      }
+    },
+    handleSizeChange (val) {
+      if (this.userVisible) {
+        if (val > this.pageSize) {
+          this.roleNone.currentPage = Math.ceil(this.totalRecode / val)
+        }
+        this.roleNone.pageSize = val
+        this._getUserListNone()
+      } else {
+        if (val > this.pageSize) {
+          this.roleUser.currentPage = Math.ceil(this.totalRecode / val)
+        }
+        this.roleUser.pageSize = val
+        this._getUserListRole()
+      }
+    },
+    handleCurrentChange (val) {
+      if (this.userVisible) {
+        this.roleNone.currentPage = val
+        this._getUserListNone()
+      } else {
+        this.roleUser.currentPage = val
+        this._getUserListRole()
+      }
+    },
+    closeRoleForm () {
+      this.roleModel = {parent: {}, authKeys: []}
+      this.$refs.roleForm.clearValidate()
+      try {
+        this.$refs.roleAuthTree.setCheckedKeys([])
+      } catch (e) {
+      }
+    },
+    closeUserForm () {
+      this.roleNone.query = ''
+      this.roleNone.userList = []
+      this.roleNone.userKeys = []
+    },
+    _getRoleTree () {
+      getRoleTree().then(res => {
+        this.roleTree = res.data
+        if (this.roleTree.length) {
+          setTimeout(() => {
+            let arr = this.roleTree.filter(item => {
+              return item.id === this.role.id
+            })
+            if (arr.length) {
+              this.role = arr[0]
+              this.$refs.roleTree.setCurrentNode(this.role)
+            } else {
+              this.role = this.roleTree[0]
+              this.$refs.roleTree.setCurrentNode(this.role)
+            }
+          }, 10)
+        }
+      })
+    },
+    _getUserListRole () {
+      getUserPageRole(true, this.role.id, this.roleUser.query, this.roleUser.currentPage, this.roleUser.pageSize).then(res => {
+        this.roleUser.totalRecode = res.data.total
+        this.roleUser.userList = res.data.data
+      })
+    },
+    _getUserListNone () {
+      getUserPageRole(false, this.role.id, this.roleNone.query, this.roleNone.currentPage, this.roleNone.pageSize).then(res => {
+        this.roleNone.totalRecode = res.data.total
+        this.roleNone.userList = res.data.data
+      })
+    },
+    _initData () {
+      getAuthTree().then(res => {
+        this.authTree = res.data
+      })
     }
   }
+}
 </script>
 
 <style scoped lang="stylus">
@@ -431,29 +431,6 @@
     height calc(100vh - 112px)
   .role-body-wrapper
     height calc(100vh - 80px)
-    .body-row
-      display flex
-      align-items center
-      justify-content space-around
-      height 40px
-      font-size 14px
-      &.active
-        color #409eff
-        background #d7eaff !important
-      &.title
-        color white
-        background #409eff !important
-      &:hover
-        background #d7eaff
-      &:nth-child(even)
-        background linear-gradient(90deg, #fff, #eee)
-        &:hover
-          background #d7eaff
-      div
-        flex 1
-        text-align center
-        flex 1
-        text-align center
   .role-wrapper
   .user-wrapper
     position relative
