@@ -1,11 +1,33 @@
 import request from '@/common/utils/request'
 
 /** 根据角色分页获取用户列表 bound (true：已绑定/false：未绑定) */
-export function getPointPage (bound, deptId, query, page, size) {
+export function getPointPage (bound, deptId, level, query, page, size) {
   return request({
     url: '/datum/point/select/page',
     method: 'get',
-    params: {bound, deptId, query, page, size}
+    params: {bound, deptId, level, query, page, size}
+  })
+}
+
+/** 获取监测点详细信息 */
+export function getPoint (pointId) {
+  return request({
+    url: '/datum/point/select',
+    method: 'get',
+    params: {pointId}
+  })
+}
+
+/** 修改监测点详细信息 */
+export function updatePoint (point) {
+  return request({
+    url: '/datum/point/update',
+    method: 'put',
+    params: {
+      id: point.id,
+      summary: point.summary,
+      jsonInfo: JSON.stringify(point.jsonInfo)
+    }
   })
 }
 
@@ -27,6 +49,42 @@ export function deletePointDept (pointKeys) {
   })
 }
 
+/** 获取监测点现场图列表 */
+export function deletePhoto (photoId) {
+  return request({
+    url: '/datum/point/photo/delete',
+    method: 'delete',
+    params: {photoId}
+  })
+}
+
+/** 获取监测点预警等级信息 */
+export function getPointPhotoList (pointId) {
+  return request({
+    url: '/datum/point/photo/select/list',
+    method: 'get',
+    params: {pointId}
+  })
+}
+
+/** 获取监测点预警等级信息 */
+export function getPointLevel (pointId) {
+  return request({
+    url: '/datum/point/level/select',
+    method: 'get',
+    params: {pointId}
+  })
+}
+
+/** 获取监测点预警等级列表 */
+export function getPointLevelList (pointId, start, end, index) {
+  return request({
+    url: '/datum/point/level/select/list',
+    method: 'get',
+    params: {pointId, start, end, index}
+  })
+}
+
 /** 查询类型/类型值列表 */
 export function getTypeList (parentId) {
   return request({
@@ -39,7 +97,7 @@ export function getTypeList (parentId) {
 /** 新增类型/类型值 */
 export function insertType (type) {
   return request({
-    url: '/system/type/insert',
+    url: '/datum/type/insert',
     method: 'post',
     params: {
       name: type.name,
@@ -52,7 +110,7 @@ export function insertType (type) {
 /** 修改类型/类型值 */
 export function updateType (type) {
   return request({
-    url: '/system/type/update',
+    url: '/datum/type/update',
     method: 'put',
     params: {
       id: type.id,
@@ -66,7 +124,7 @@ export function updateType (type) {
 /** 删除类型/类型值 */
 export function deleteType (typeId) {
   return request({
-    url: '/system/type/delete',
+    url: '/datum/type/delete',
     method: 'delete',
     params: {typeId}
   })
@@ -75,7 +133,7 @@ export function deleteType (typeId) {
 /** 上移类型/类型值 */
 export function upType (typeId) {
   return request({
-    url: '/system/type/up',
+    url: '/datum/type/up',
     method: 'put',
     params: {typeId}
   })
@@ -84,7 +142,7 @@ export function upType (typeId) {
 /** 下移类型/类型值 */
 export function downType (typeId) {
   return request({
-    url: '/system/type/down',
+    url: '/datum/type/down',
     method: 'put',
     params: {typeId}
   })

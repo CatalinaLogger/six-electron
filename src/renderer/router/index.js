@@ -16,7 +16,7 @@ export const constantRouters = [
     redirect: 'dashboard',
     children: [{
       path: 'dashboard',
-      component: require('@/views/dashboard').default,
+      component: require('@/views/cockpit').default,
       meta: {type: 1, title: '控制台', icon: 'dashboard'}
     }]
   },

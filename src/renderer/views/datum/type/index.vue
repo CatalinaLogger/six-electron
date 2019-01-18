@@ -12,21 +12,21 @@
       <div class="head-wrapper">
         <div class="title">类型值</div>
         <div class="operate">
-          <el-button size="mini" type="primary" plain icon="el-icon-circle-plus-outline" @click="insertType">新增类型值</el-button>
+          <el-button size="mini" type="primary" plain icon="el-icon-circle-plus-outline" @click="insertType" :disabled="!type.id">新增类型值</el-button>
         </div>
       </div>
       <el-scrollbar class="data-body-wrapper" wrap-class="scrollbar-wrapper">
         <div class="six-row title"><div>名称</div><div>更新时间</div><div>更新人员</div><div>操作</div></div>
-        <div class="six-row" v-for="data in dataList" :key="data.id">
-          <div>{{data.name}}</div>
-          <div>{{data.operateTime}}</div>
-          <div>{{data.operateName}}</div>
+        <div class="six-row" v-for="item in dataList" :key="item.id">
+          <div>{{item.name}}</div>
+          <div>{{item.operateTime}}</div>
+          <div>{{item.operateName}}</div>
           <div>
             <el-button-group class="operate">
-              <el-button size="mini" class="el-icon-upload2"></el-button>
-              <el-button size="mini" class="el-icon-download"></el-button>
-              <el-button size="mini" icon="el-icon-edit"></el-button>
-              <el-button size="mini" icon="el-icon-delete"></el-button>
+              <el-button size="mini" class="el-icon-upload2" @click="upType(item)"></el-button>
+              <el-button size="mini" class="el-icon-download" @click="downType(item)"></el-button>
+              <el-button size="mini" icon="el-icon-edit" @click="updateType(item)"></el-button>
+              <el-button size="mini" icon="el-icon-delete" @click="deleteType(item)"></el-button>
             </el-button-group>
           </div>
         </div>
@@ -46,6 +46,14 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="typeVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitTypeModel">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog class="none-padding tips-dialog" top="0" width="400px" :visible.sync="deleteVisible" :show-close="false">
+      <div><i class="el-icon-warning"></i></div>
+      <div class="message">确定要删除该类型值吗？</div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="deleteVisible = false">取 消</el-button>
+        <el-button type="primary" @click="deleteTypeModel">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -71,8 +79,12 @@ export default {
     this._initData()
   },
   methods: {
-    insertType (type) {
-      this.typeModel = {parent: type}
+    selectType (type) {
+      this.type = type
+      this._getDataList()
+    },
+    insertType () {
+      this.typeModel = {parent: this.type}
       this.typeTitle = '新增类型值'
       this.typeVisible = true
     },
@@ -123,9 +135,6 @@ export default {
       this.typeModel = {parent: {}}
       this.$refs.typeForm.clearValidate()
     },
-    selectType (type) {
-      this.type = type
-    },
     _getDataList () {
       getTypeList(this.type.id).then(res => {
         this.dataList = res.data
@@ -134,6 +143,8 @@ export default {
     _initData () {
       getTypeList().then(res => {
         this.typeList = res.data
+        this.type = this.typeList[0]
+        this._getDataList()
       })
     }
   }

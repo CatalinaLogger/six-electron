@@ -15,7 +15,9 @@ export default {
   props: {
     center: {
       type: Array,
-      default: [28.224096, 112.988719]
+      default: () => {
+        return [28.224096, 112.988719]
+      }
     },
     zoom: {
       type: Number,
@@ -38,7 +40,7 @@ export default {
   methods: {
     _loadMap () {
       let layer = L.tileLayer('https://mt{s}.google.cn/maps/vt?lyrs=y&hl=zh-CN&gl=CN&&x={x}&y={y}&z={z}&scale=1', {
-        subdomains: '0123',
+        subdomains: '012',
         minZoom: 3,
         maxZoom: 18
       })

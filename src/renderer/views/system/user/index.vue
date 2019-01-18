@@ -1,7 +1,7 @@
 <template>
   <div class="user-container">
     <div class="dept-wrapper">
-      <div class="head-wrapper"><div class="title">区域列表</div></div>
+      <div class="head-wrapper"><div class="title">组织架构</div></div>
       <el-scrollbar class="dept-body-wrapper" wrap-class="scrollbar-wrapper">
         <div class="six-tree">
           <el-tree node-key="id"
@@ -67,7 +67,7 @@
         <el-form-item label="邮箱" prop="mail">
           <el-input v-model="userModel.mail"></el-input>
         </el-form-item>
-        <el-form-item label="区域" prop="deptKeys">
+        <el-form-item label="部门" prop="deptKeys">
           <el-button plain style="width: 100%; overflow: hidden" @click="selectDept">
             <div v-if="userModel.deptKeys.length > 0">
               <span class="dept-block" v-for="(item, index) in userModel.deptNames" :key="index" >{{item}}</span>
@@ -79,7 +79,7 @@
           <el-input v-model="userModel.remark"></el-input>
         </el-form-item>
       </el-form>
-      <el-dialog class="none-padding" title="选择区域" top="0" width="400px" :visible.sync="deptVisible" append-to-body>
+      <el-dialog class="none-padding" title="选择部门" top="0" width="400px" :visible.sync="deptVisible" append-to-body>
         <el-scrollbar class="user-dept-tree" wrap-class="scrollbar-wrapper">
           <el-tree
             node-key="id"
@@ -180,7 +180,7 @@ export default {
         name: [{required: true, trigger: 'blur', message: '姓名不能为空'}],
         phone: [{required: true, trigger: 'blur', validator: validatePhone}],
         mail: [{required: true, trigger: 'blur', validator: validateMail}],
-        deptKeys: [{required: true, trigger: 'blur', message: '区域不能为空'}]
+        deptKeys: [{required: true, trigger: 'blur', message: '部门不能为空'}]
       },
       userTitle: '',
       userVisible: false,

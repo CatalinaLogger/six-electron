@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-wrapper"/>
+  <div class="chart"/>
 </template>
 
 <script>
@@ -36,21 +36,32 @@ export default {
     _drawChart () {
       if (!this.chart) {
         this.chart = echarts.init(this.$el, 'macarons')
+        // 处理点击事件
+        let self = this
+        this.chart.on('click', function (params) {
+          self.$emit('click', params)
+        })
       }
-      // 使用配置项和数据显示图表。
-      this.chart.setOption(this.option)
-      // 处理点击事件
-      let self = this
-      this.chart.on('click', function (params) {
-        self.$emit('click', params)
-      })
+      try {
+        // 使用配置项和数据显示图表。
+        this.option.color = ['#F56C6C', '#E6A23C', '#f4e925', '#409EFF', '#67C23A']
+        this.chart.setOption(this.option)
+      } catch (e) {
+        try {
+          this.chart.clear()
+        } catch (e) {
+        }
+      }
     }
   },
   watch: {
-    option (val) {
-      if (val) {
-        this._drawChart()
-      }
+    option: {
+      handler: function (val) {
+        if (val) {
+          this._drawChart()
+        }
+      },
+      deep: true
     },
     opened () {
       setTimeout(() => {
@@ -62,7 +73,7 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-.chart-wrapper
+.chart
   width 100%
   height 100%
 </style>

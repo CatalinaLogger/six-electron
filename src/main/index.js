@@ -24,7 +24,7 @@ function createWindow () {
     height: 360,
     minWidth: 400,
     minHeight: 360,
-    backgroundColor: '#6266ff',
+    backgroundColor: '#040f25',
     useContentSize: true,
     frame: false,
     autoHideMenuBar: true // 自动隐藏菜单栏, 除非按了Alt键. 默认值为false

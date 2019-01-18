@@ -8,7 +8,7 @@
         </div>
       </div>
       <div :style="{'min-width': minWidth + 'px', 'height': height + 'px'}">
-        <div class="head">历史预警</div>
+        <div class="head">预警统计</div>
         <div class="body">
           <chart class-name="line" :option="optionLine" @click="clickRing"></chart>
         </div>
@@ -38,6 +38,7 @@
 <script>
 import Chart from '@/components/chart'
 import MapInfo from './map-info'
+import { getPointPage } from '@/api/datum'
 
 export default {
   data () {
@@ -78,6 +79,7 @@ export default {
     }
   },
   mounted () {
+    this._initData()
     this.drawRing()
     let resize = () => {
       let width = window.innerWidth
@@ -110,26 +112,6 @@ export default {
           {
             name: '预警级别',
             type: 'pie',
-            radius: ['50%', '70%'],
-            avoidLabelOverlap: false,
-            label: {
-              normal: {
-                show: false,
-                position: 'center'
-              },
-              emphasis: {
-                show: true,
-                textStyle: {
-                  fontSize: '30',
-                  fontWeight: 'bold'
-                }
-              }
-            },
-            labelLine: {
-              normal: {
-                show: false
-              }
-            },
             data: [
               {value: 335, name: '红色预警', type: 4, itemStyle: {color: '#F56C6C'}},
               {value: 310, name: '橙色预警', type: 3, itemStyle: {color: '#E6A23C'}},
@@ -142,63 +124,49 @@ export default {
       }
       this.optionLine = {
         tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          bottom: 0
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
         },
         grid: {
-          left: '3%',
-          top: '5%',
-          right: '8%',
+          left: '0%',
+          top: '8%',
+          right: '6%',
+          bottom: '10%',
           containLabel: true
         },
         xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: ['12-19', '12-20', '12-21', '12-22', '12-23', '12-24', '今天']
+          type: 'value'
         },
         yAxis: {
-          type: 'value'
+          type: 'category',
+          data: ['监测正常', '蓝色预警', '黄色预警', '橙色预警', '红色预警']
         },
         series: [
           {
-            name: '监测正常',
-            type: 'line',
-            smooth: false,
-            itemStyle: {color: '#67C23A'},
-            data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: '蓝色预警',
-            type: 'line',
-            smooth: false,
-            itemStyle: {color: '#409EFF'},
-            data: [220, 182, 191, 234, 290, 330, 310]
-          },
-          {
-            name: '黄色预警',
-            type: 'line',
-            smooth: false,
-            itemStyle: {color: '#e2e200'},
-            data: [150, 232, 201, 154, 190, 330, 410]
-          },
-          {
-            name: '橙色预警',
-            type: 'line',
-            smooth: false,
-            itemStyle: {color: '#E6A23C'},
-            data: [160, 120, 110, 300, 284, 246, 164]
-          },
-          {
-            name: '红色预警',
-            type: 'line',
-            smooth: false,
-            itemStyle: {color: '#F56C6C'},
-            data: [320, 332, 301, 334, 390, 330, 320]
+            type: 'bar',
+            label: {
+              normal: {
+                show: true,
+                position: 'insideRight'
+              }
+            },
+            data: [
+              {value: 1548, name: '监测正常', type: 0, itemStyle: {color: '#67C23A'}},
+              {value: 135, name: '蓝色预警', type: 1, itemStyle: {color: '#409EFF'}},
+              {value: 234, name: '黄色预警', type: 2, itemStyle: {color: '#e2e200'}},
+              {value: 310, name: '橙色预警', type: 3, itemStyle: {color: '#E6A23C'}},
+              {value: 335, name: '红色预警', type: 4, itemStyle: {color: '#F56C6C'}}
+            ]
           }
         ]
       }
+    },
+    _initData () {
+      getPointPage(true, null, 1, null, 1, 100).then(res => {
+        console.log(res)
+      })
     }
   },
   components: {
@@ -212,7 +180,7 @@ export default {
 $text-show = #409EFF
 $red = #F56C6C
 $orange = #E6A23C
-$yellow = #FFFF00
+$yellow = #f4e925
 $blue = #409EFF
 $green = #67C23A
 

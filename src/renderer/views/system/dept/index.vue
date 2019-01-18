@@ -24,10 +24,10 @@
     </div>
     <el-dialog top="0" width="400px" :title="deptTitle" :visible.sync="deptVisible" @close="closeDeptForm">
       <el-form :model="deptModel" :rules="deptRules" label-position="left" label-width="80px" ref="deptForm">
-        <el-form-item label="上级区域" v-if="deptModel.parent.id">
+        <el-form-item label="上级" v-if="deptModel.parent.id">
           <el-input :value="deptModel.parent.name" disabled></el-input>
         </el-form-item>
-        <el-form-item label="区域名称" prop="name">
+        <el-form-item label="名称" prop="name">
           <el-input v-model="deptModel.name"></el-input>
         </el-form-item>
         <el-form-item label="负责人" v-if="deptModel.id">
@@ -64,7 +64,7 @@
     </el-dialog>
     <el-dialog class="none-padding tips-dialog" top="0" width="400px" :visible.sync="deleteVisible" :show-close="false">
       <div><i class="el-icon-warning"></i></div>
-      <div class="message">确定要删除该区域吗？</div>
+      <div class="message">确定要删除该组织吗？</div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="deleteVisible = false">取 消</el-button>
         <el-button type="primary" @click="deleteDeptModel">确 定</el-button>
@@ -82,11 +82,11 @@ export default {
   data () {
     return {
       deptTree: [],
-      deptColumns: [{text: '区域名称', value: 'name'}],
+      deptColumns: [{text: '名称', value: 'name'}],
       dept: {},
       deptModel: {parent: {}, leadKeys: [], leadNames: []},
       deptRules: {
-        name: [{required: true, message: '区域名称不能为空', trigger: 'blur'}]
+        name: [{required: true, message: '名称不能为空', trigger: 'blur'}]
       },
       deptTitle: '',
       deptVisible: false,
@@ -103,7 +103,7 @@ export default {
   methods: {
     insertDept (dept) {
       this.deptModel = {parent: {id: dept.id, name: dept.name}}
-      this.deptTitle = '新增区域'
+      this.deptTitle = '新增组织'
       this.deptVisible = true
     },
     updateDept (dept) {
@@ -118,7 +118,7 @@ export default {
         this.leadList = this.deptModel.leadKeys
       }
       this._getDeptUserList()
-      this.deptTitle = '编辑区域'
+      this.deptTitle = '编辑组织'
       this.deptVisible = true
     },
     selectLead () {
