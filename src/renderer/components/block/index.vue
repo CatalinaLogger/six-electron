@@ -43,7 +43,7 @@ $borderSize=1px
   .master
     width 100%
     height 100%
-    animation shadow 5s infinite linear
+    box-shadow inset 0 0 20px #077ccb
   .corner
     position absolute
     width 20px

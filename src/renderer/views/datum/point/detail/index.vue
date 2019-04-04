@@ -3,8 +3,8 @@
     <div class="head-wrapper">
       监测点详情
       <div class="operate">
-        <el-button @click="submitPointModel" v-if="edit">保存</el-button>
-        <el-button @click="updatePoint" v-else>编辑</el-button>
+        <el-button @click="submitPointModel" v-if="edit && button.detailUpdate && !button.detailUpdate.hidden">保存</el-button>
+        <el-button @click="updatePoint" v-else-if="button.detailUpdate && !button.detailUpdate.hidden">编辑</el-button>
         <el-button @click="callback">返回</el-button>
       </div>
     </div>
@@ -50,6 +50,7 @@
         <el-scrollbar v-if="edit" class="photo-wrapper" wrap-class="scrollbar-wrapper">
           <el-upload
                      list-type="picture-card"
+                     multiple
                      :action="baseUrl+'/datum/point/photo/upload'"
                      :headers="headers"
                      :data="params"
@@ -72,104 +73,121 @@
           <div class="info" v-else>{{pointModel.summary}}</div>
         </el-form-item>
       </div>
-      <div class="box">
-        <h4>地形地貌</h4>
-        <el-form-item label="类型">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.type"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.type}}</div>
-        </el-form-item>
-        <el-form-item label="坡度">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.degree"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.degree}}</div>
-        </el-form-item>
-        <el-form-item label="坡高">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.height"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.height}}</div>
-        </el-form-item>
-      </div>
-      <div class="box">
-        <h4>地层岩性</h4>
-        <el-form-item label="岩性">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.lithology"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.lithology}}</div>
-        </el-form-item>
-        <el-form-item label="厚度">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.thickness"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.thickness}}</div>
-        </el-form-item>
-      </div>
-      <div class="box">
-        <h4>地质构造</h4>
-        <el-form-item label="规模">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.scale"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.scale}}</div>
-        </el-form-item>
-      </div>
-      <div class="box">
-        <h4>水文地质</h4>
-        <el-form-item label="土壤含水">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.water"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.water}}</div>
-        </el-form-item>
-        <el-form-item label="周边水系">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.drainage"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.drainage}}</div>
-        </el-form-item>
-      </div>
-      <div class="box">
-        <h4>工程地质</h4>
-        <el-form-item label="房屋建筑">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.building"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.building}}</div>
-        </el-form-item>
-      </div>
-      <div class="box">
-        <h4>人类工程活动</h4>
-        <el-form-item label="人类活动强度">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.activity"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.activity}}</div>
-        </el-form-item>
-      </div>
-      <div class="box">
-        <h4>成因机制</h4>
-        <el-form-item label="地质因素">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.geology"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.geology}}</div>
-        </el-form-item>
-        <el-form-item label="物理因素">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.physical"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.type}}</div>
-        </el-form-item>
-        <el-form-item label="人为因素">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.artificial"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.artificial}}</div>
-        </el-form-item>
-      </div>
-      <div class="box">
-        <h4>塌陷规模</h4>
-        <el-form-item label="直径（m）">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.diameter"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.diameter}}</div>
-        </el-form-item>
-        <el-form-item label="深度（m）">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.depth"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.depth}}</div>
-        </el-form-item>
-        <el-form-item label="塌陷时间">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.collapseTime"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.collapseTime}}</div>
-        </el-form-item>
-        <el-form-item label="影响范围">
-          <el-input v-if="edit" v-model="pointModel.jsonInfo.scope"></el-input>
-          <div class="info" v-else>{{pointModel.jsonInfo.scope}}</div>
-        </el-form-item>
-      </div>
-      <div class="box">
-        <h4>备注</h4>
-        <el-form-item>
-          <el-input v-if="edit" type="textarea" :autosize="{minRows: 4}" v-model="pointModel.jsonInfo.remark"></el-input>
-        </el-form-item>
-      </div>
+      <template v-if="pointModel.jsonInfo.length">
+        <div class="box" v-for="point in pointModel.jsonInfo" :key="point.id">
+          <h4>{{point.s4}}</h4>
+          <el-form-item label="塌陷时间">
+            <el-input v-if="edit" v-model="point.s5"></el-input>
+            <div class="info" v-else>{{point.s5}}</div>
+          </el-form-item>
+          <el-form-item label="直径（m）">
+            <el-input v-if="edit" v-model="point.s6"></el-input>
+            <div class="info" v-else>{{point.s6}}</div>
+          </el-form-item>
+          <el-form-item label="深度（m）">
+            <el-input v-if="edit" v-model="point.s7"></el-input>
+            <div class="info" v-else>{{point.s7}}</div>
+          </el-form-item>
+          <el-form-item label="影响范围">
+            <el-input v-if="edit" v-model="point.s8"></el-input>
+            <div class="info" v-else>{{point.s8}}</div>
+          </el-form-item>
+          <el-form-item label="周边水系">
+            <el-input v-if="edit" v-model="point.s9"></el-input>
+            <div class="info" v-else>{{point.s9}}</div>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-if="edit" v-model="point.s10"></el-input>
+            <div class="info" v-else>{{point.s10}}</div>
+          </el-form-item>
+        </div>
+      </template>
+      <template v-else>
+        <div class="box">
+          <h4>地形地貌</h4>
+          <el-form-item label="类型">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c4"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c4}}</div>
+          </el-form-item>
+          <el-form-item label="坡度">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c5"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c5}}</div>
+          </el-form-item>
+          <el-form-item label="坡高">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c6"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c6}}</div>
+          </el-form-item>
+        </div>
+        <div class="box">
+          <h4>地层岩性</h4>
+          <el-form-item label="岩性">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c7"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c7}}</div>
+          </el-form-item>
+          <el-form-item label="厚度">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c8"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c8}}</div>
+          </el-form-item>
+        </div>
+        <div class="box">
+          <h4>地质构造</h4>
+          <el-form-item label="规模">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c9"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c9}}</div>
+          </el-form-item>
+        </div>
+        <div class="box">
+          <h4>水文地质</h4>
+          <el-form-item label="土壤含水">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c10"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c10}}</div>
+          </el-form-item>
+          <el-form-item label="周边水系">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c11"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c11}}</div>
+          </el-form-item>
+        </div>
+        <div class="box">
+          <h4>工程地质</h4>
+          <el-form-item label="房屋建筑">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c12"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c12}}</div>
+          </el-form-item>
+        </div>
+        <div class="box">
+          <h4>人类工程活动</h4>
+          <el-form-item label="人类活动强度">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c13"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c13}}</div>
+          </el-form-item>
+        </div>
+        <div class="box">
+          <h4>成因机制</h4>
+          <el-form-item label="地质因素">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c14"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c14}}</div>
+          </el-form-item>
+          <el-form-item label="物理因素">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c15"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c15}}</div>
+          </el-form-item>
+          <el-form-item label="人为因素">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c16"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c16}}</div>
+          </el-form-item>
+        </div>
+        <div class="box">
+          <h4></h4>
+          <el-form-item label="滑坡方向">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c17"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c17}}</div>
+          </el-form-item>
+          <el-form-item label="现场方向">
+            <el-input v-if="edit" v-model="pointModel.jsonInfo.c18"></el-input>
+            <div class="info" v-else>{{pointModel.jsonInfo.c18}}</div>
+          </el-form-item>
+        </div>
+      </template>
     </el-form>
   </el-scrollbar>
 </template>
@@ -178,11 +196,16 @@
 import L from 'leaflet'
 import BaseMap from '@/components/base-map'
 import Chart from '@/components/chart'
+import wgsToGcj from '@/common/utils/location'
 import { getToken } from '@/common/utils/auth'
 import { getPoint, getPointLevel, getPointPhotoList, getPointLevelList, updatePoint, deletePhoto } from '@/api/datum'
 
 export default {
   props: {
+    button: {
+      type: Object,
+      default: null
+    },
     point: {
       type: Object,
       default: null
@@ -194,7 +217,7 @@ export default {
       picker: [],
       optionLine: null,
       map: null,
-      center: [this.point.lat, this.point.lng],
+      center: [],
       pointLevel: {},
       edit: false,
       headers: {
@@ -227,6 +250,8 @@ export default {
     }
   },
   mounted () {
+    let lngLat = wgsToGcj(this.point.lng, this.point.lat)
+    this.center = [lngLat[1], lngLat[0]]
     this._getPointLevelList()
     this._getPointInfo()
   },
@@ -259,8 +284,9 @@ export default {
     },
     /** 渲染监测点 */
     renderPoint () {
+      let lngLat = wgsToGcj(this.point.lng, this.point.lat)
       let icon = L.icon({iconUrl: `static/svg/coast1.svg`, iconSize: [50, 50], iconAnchor: [25, 50]})
-      let marker = L.marker([this.point.lat, this.point.lng], {icon: icon, riseOnHover: true, title: this.point.name}).addTo(this.map)
+      let marker = L.marker([lngLat[1], lngLat[0]], {icon: icon, riseOnHover: true, title: this.point.name}).addTo(this.map)
       marker.on('click', (event) => {
         this.pointVisible = true
       })
@@ -301,26 +327,21 @@ export default {
           pieces: [{
             gt: 0.5,
             lte: 1.5,
-            label: '监测正常',
-            color: '#67C23A'
-          }, {
-            gt: 1.5,
-            lte: 2.5,
             label: '蓝色预警',
             color: '#409EFF'
           }, {
-            gt: 2.5,
-            lte: 3.5,
+            gt: 1.5,
+            lte: 2.5,
             label: '黄色预警',
             color: '#FFFF00'
           }, {
-            gt: 3.5,
-            lte: 4.5,
+            gt: 2.5,
+            lte: 3.5,
             label: '橙色预警',
             color: '#E6A23C'
           }, {
-            gt: 4.5,
-            lte: 5.5,
+            gt: 3.5,
+            lte: 4.5,
             label: '红色预警',
             color: '#F56C6C'
           }]
@@ -377,7 +398,17 @@ export default {
     },
     _getPointPhotoList () {
       getPointPhotoList(this.point.id).then(res => {
-        this.photoList = res.data
+        this.photoList = this.photoList.filter(i1 => {
+          return res.data.filter(i2 => {
+            if (i1.id === i2.id) {
+              res.data.splice(res.data.indexOf(i2), 1)
+              return true
+            } else {
+              return false
+            }
+          }).length > 0
+        })
+        this.photoList.push(...res.data)
       })
     }
   },
@@ -414,14 +445,12 @@ export default {
       &:hover
         box-shadow 0px 4px 4px #dedede
       .level1
-        color #67C23A
-      .level2
         color #409EFF
-      .level3
+      .level2
         color #FFFF00
-      .level4
+      .level3
         color #E6A23C
-      .level5
+      .level4
         color #F56C6C
       p
         color black

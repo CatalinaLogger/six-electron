@@ -3,19 +3,73 @@ import axios from 'axios'
 /** 获取设备在线情况列表 */
 export function getOnline () {
   return request({
-    url: 'http://cloud.bdsmc.net:8000/getDeviceOnlineCount',
+    url: 'http://cloud.bdsmc.net:8006/devicestat?project_id=12',
     method: 'get'
   })
 }
 
 /** 获取数据量统计情况 */
-export function getCount (id) {
+export function getCount () {
   return request({
-    url: 'http://cloud.bdsmc.net:8000/getTotalDataCount',
+    url: 'http://cloud.bdsmc.net:8006/counts',
+    method: 'get'
+  })
+}
+
+/** 获取数据量统计情况 */
+export function getDevice (id) {
+  return request({
+    url: 'http://cloud.bdsmc.net:8006/devices',
     method: 'get',
     params: {
-      id
+      poi_id: id
     }
+  })
+}
+
+export function getDeviceData (mac, num) {
+  return request({
+    url: 'http://cloud.bdsmc.net:8006/devicedata',
+    method: 'get',
+    params: {
+      mac,
+      num,
+      frontend: 'web'
+    }
+  })
+}
+
+/** 发送预警广播 */
+export function sendMessage (sms, phone) {
+  return request({
+    url: 'http://cloud.bdsmc.net:8006/sms',
+    method: 'get',
+    params: {
+      sms,
+      phone
+    }
+  })
+}
+
+export function getSarList (color) {
+  return request({
+    url: 'http://cloud.bdsmc.net:8006/insar',
+    method: 'get',
+    params: {color}
+  })
+}
+
+export function getNxJson () {
+  return request({
+    url: 'static/json/nx.json',
+    method: 'get'
+  })
+}
+
+export function getSarJson () {
+  return request({
+    url: 'static/json/sar.json',
+    method: 'get'
   })
 }
 

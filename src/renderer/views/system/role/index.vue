@@ -62,7 +62,7 @@
           <el-table-column align="center" prop="name" label="姓名"></el-table-column>
           <el-table-column align="center" prop="phone" label="手机"></el-table-column>
           <el-table-column align="center" prop="mail" label="邮箱" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" label="区域" show-overflow-tooltip>
+          <el-table-column align="center" label="组织" show-overflow-tooltip>
             <template slot-scope="scope">
               <el-tag type="primary" v-for="(item, index) in scope.row.dept" :key="index" >{{item.name}}</el-tag>
             </template>

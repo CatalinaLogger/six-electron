@@ -1,0 +1,27 @@
+{"errcode":0,
+  "errmsg":"ok",
+  "userlist":[
+    {"userid":"JinPing",
+      "name":"金平",
+      "department":[4,3,2,1],
+      "position":"开发",
+      "mobile":"17388976785",
+      "gender":"1",
+      "email":"1641525429@qq.com",
+      "avatar":"http://p.qlogo.cn/bizmail/Nx4fAiaE33MjueK0fAlYXrROZwkLvdqZwEcuiaehjfXgUY5f4yWtDkWw/0",
+      "status":1,
+      "enable":1,
+      "isleader":1,
+      "extattr":{"attrs":[]},
+      "hide_mobile":0,
+      "telephone":"010-85520520",
+      "order":[0,0,0,0],
+      "external_profile":{"external_attr":[],"external_corp_name":""},
+      "qr_code":"https://open.work.weixin.qq.com/wwopen/userQRCode?vcode=vce3914808cca0798b",
+      "alias":"懂得体面",
+      "external_position":"实施",
+      "is_leader_in_dept":[1,0,1,1],
+      "address":"湖南省长沙市岳麓区瓜瓢山"
+    }
+  ]
+}

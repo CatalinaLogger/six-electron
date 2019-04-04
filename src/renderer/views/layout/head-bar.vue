@@ -13,7 +13,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <div style="-webkit-app-region: no-drag" class="hidden" @click="hidden"><i class="el-icon-minus"></i></div>
-    <div style="-webkit-app-region: no-drag" class="change" @click="change"><svg-icon :icon-class="max ? 'min' : 'max'"/></div>
+    <div style="-webkit-app-region: no-drag" class="change" @click="change"><svg-icon :icon-class="screen.full ? 'min' : 'max'"/></div>
     <div style="-webkit-app-region: no-drag" class="closed" @click="closed"><i class="el-icon-close"></i></div>
 
     <el-dialog top="0" width="400px" title="修改密码" :visible.sync="passVisible" :close-on-click-modal="false" @close="closePassForm">
@@ -61,7 +61,6 @@ export default {
       }
     }
     return {
-      max: false,
       passModel: {},
       passRules: {
         oldPassword: [{required: true, trigger: 'blur', message: '原始密码不能为空'}],
@@ -72,8 +71,12 @@ export default {
     }
   },
   computed: {
+    full () {
+      return this.screen.full
+    },
     ...mapGetters([
       'sidebar',
+      'screen',
       'name',
       'avatar'
     ])
@@ -118,18 +121,21 @@ export default {
       main.minimize()
     },
     change () {
-      let main = this.$electron.remote.getCurrentWindow()
-      if (this.max) {
-        main.unmaximize()
-        this.max = false
+      if (this.screen.full) {
+        this.$store.dispatch('setFullScreen', false)
       } else {
-        main.maximize()
-        this.max = true
+        this.$store.dispatch('setFullScreen', true)
       }
     },
     closed () {
       let main = this.$electron.remote.getCurrentWindow()
       main.destroy()
+    }
+  },
+  watch: {
+    full (val) {
+      let main = this.$electron.remote.getCurrentWindow()
+      main.setFullScreen(val)
     }
   }
 }

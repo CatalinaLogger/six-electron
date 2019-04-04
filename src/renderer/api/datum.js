@@ -1,11 +1,49 @@
 import request from '@/common/utils/request'
 
-/** 根据角色分页获取用户列表 bound (true：已绑定/false：未绑定) */
+/** 分页获取待发布预警结果列表 */
+export function getWarnPage (deptId, query, page, size) {
+  return request({
+    url: '/datum/warn/select/page',
+    method: 'get',
+    params: {deptId, query, page, size}
+  })
+}
+
+/** 批量发布预警结果 */
+export function updateWarn (warnKeys, send) {
+  return request({
+    url: '/datum/warn/update',
+    method: 'put',
+    params: {send, warnKeys: warnKeys.toString()}
+  })
+}
+
+/** 批量排除预警结果 */
+export function deleteWarn (warnKeys) {
+  return request({
+    url: '/datum/warn/delete',
+    method: 'delete',
+    params: {warnKeys: warnKeys.toString()}
+  })
+}
+
+/** 分页获取监测点列表 bound (true：已绑定/false：未绑定) */
 export function getPointPage (bound, deptId, level, query, page, size) {
   return request({
     url: '/datum/point/select/page',
     method: 'get',
     params: {bound, deptId, level, query, page, size}
+  })
+}
+
+export function downloadTemplate () {
+  return request({
+    url: '/datum/point/download/template',
+    method: 'get',
+    responseType: 'blob',
+    params: {
+      date: new Date().toTimeString()
+    }
   })
 }
 
@@ -23,7 +61,7 @@ export function updatePoint (point) {
   return request({
     url: '/datum/point/update',
     method: 'put',
-    params: {
+    data: {
       id: point.id,
       summary: point.summary,
       jsonInfo: JSON.stringify(point.jsonInfo)
@@ -145,5 +183,20 @@ export function downType (typeId) {
     url: '/datum/type/down',
     method: 'put',
     params: {typeId}
+  })
+}
+
+/** 变更预警等级 */
+export function updateWarnLevel (warn) {
+  return request({
+    url: '/datum/warn/level/update',
+    method: 'put',
+    params: {
+      warnId: warn.warnId,
+      level: warn.level,
+      remark: warn.remark,
+      device: warn.device,
+      event: warn.event
+    }
   })
 }

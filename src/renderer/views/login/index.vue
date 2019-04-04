@@ -22,7 +22,6 @@
         <div class="option">
           <el-checkbox v-model="loginModel.remember">记住密码</el-checkbox>
           <el-checkbox v-model="loginModel.automation">自动登录</el-checkbox>
-          <div class="forget" @click="handleForget">忘记密码？</div>
         </div>
       </el-form>
     </div>
@@ -94,6 +93,8 @@ export default {
       main.destroy()
     },
     _initWindow () {
+      console.log('login')
+      this.$store.dispatch('setFullScreen', false)
       let main = this.$electron.remote.getCurrentWindow()
       main.setMinimumSize(400, 360)
       main.setSize(400, 360)
@@ -157,6 +158,8 @@ export default {
       .el-checkbox
         flex 1
         color white
+        &:last-child
+          text-align right
       .forget
         flex 1
         float right

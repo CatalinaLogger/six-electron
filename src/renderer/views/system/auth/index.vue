@@ -6,12 +6,13 @@
           <template slot-scope="scope">
             <el-tag type="warning" v-if="scope.row.type === 0">目录</el-tag>
             <el-tag type="success" v-if="scope.row.type === 1">菜单</el-tag>
-            <el-tag v-if="scope.row.type === 2">按钮</el-tag>
+            <el-tag type="success" v-if="scope.row.type === 2">路由</el-tag>
+            <el-tag v-if="scope.row.type === 3">按钮</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" label="图标" width="60">
           <template slot-scope="scope">
-            <svg-icon :icon-class="scope.row.icon"></svg-icon>
+            <svg-icon v-if="scope.row.icon" :icon-class="scope.row.icon"></svg-icon>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="operateTime" label="更新时间" width="160"></el-table-column>

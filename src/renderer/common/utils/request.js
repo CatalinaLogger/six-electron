@@ -40,15 +40,19 @@ service.interceptors.response.use(
         })
         return response.data
       }
-      Message({
-        message: res.msg,
-        type: 'error',
-        duration: 5 * 1000
-      })
+      if (res.size > 0) {
+        return res
+      } else {
+        Message({
+          message: res.msg,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
       if (res.code === -10) {
         setTimeout(() => {
           store.dispatch('FedLogOut').then(() => {
-            location.reload()// 为了重新实例化vue-router对象 避免bug
+            // location.reload()// 为了重新实例化vue-router对象 避免bug
           })
         }, 5)
       }
@@ -66,13 +70,12 @@ service.interceptors.response.use(
       }
       return Promise.reject(new Error())
     } else {
-      return response.data
+      return res
     }
   },
   error => {
-    console.log('err' + error)// for debug
     Message({
-      message: error.message,
+      message: '网络连接异常，请检查网络连接！',
       type: 'error',
       duration: 5 * 1000
     })

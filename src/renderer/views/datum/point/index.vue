@@ -9,8 +9,9 @@
         <el-input v-model="pointDept.query" clearable placeholder="搜索监测点" @change="changeQuery"></el-input>
       </div>
       <div class="operate">
-        <el-button size="mini" type="primary" plain icon="el-icon-circle-plus-outline" @click="selectPoint" :disabled="!deptId">批量添加</el-button>
-        <el-button size="mini" type="primary" plain icon="el-icon-remove-outline" @click="deletePointDept" :disabled="!pointDept.pointKeys.length">批量移除</el-button>
+        <el-button size="mini" type="primary" plain icon="el-icon-upload" @click="templateVisible = true">上传数据</el-button>
+        <el-button size="mini" type="primary" plain icon="el-icon-circle-plus-outline" @click="selectPoint" :disabled="!deptId" v-if="button.batchInsert && !button.batchInsert.hidden">批量添加</el-button>
+        <el-button size="mini" type="primary" plain icon="el-icon-remove-outline" @click="deletePointDept" :disabled="!pointDept.pointKeys.length" v-if="button.batchDelete && !button.batchDelete.hidden">批量移除</el-button>
       </div>
     </div>
     <el-table class="six-table" :data="pointDept.pointList" size="mini" stripe @selection-change="pointDeptChange">
@@ -41,6 +42,25 @@
       layout="total, sizes, prev, pager, next"
       :total="pointDept.totalRecode">
     </el-pagination>
+    <el-dialog top="0" width="400px" title="批量上传" :visible.sync="templateVisible">
+      <el-upload
+        class="upload-detail"
+        ref="upload"
+        :action="baseUrl+'/datum/point/upload/template'"
+        :headers="headers"
+        :data="{'deptId': deptId}"
+        :file-list="fileList"
+        :on-success="onSuccess"
+        :auto-upload="false">
+        <el-button slot="trigger" size="mini" type="primary">选取文件</el-button>
+        <el-button style="margin-left: 10px;" size="mini" type="success" @click="downloadTemplate">下载模板文件</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传xls/xlsx文件，且只能使用上方模板上传</div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="templateVisible = false">取 消</el-button>
+        <el-button type="primary" @click="uploadTemplate">确 定</el-button>
+      </div>
+    </el-dialog>
     <el-dialog class="none-padding" top="0" width="600px" title="监测点列表" :visible.sync="selectVisible" @close="closeSelectForm">
       <div class="operate">
         <el-input size="mini" v-model="pointNone.query" placeholder="搜索监测点" clearable @change="changeQuery"></el-input>
@@ -73,19 +93,26 @@
       </div>
     </el-dialog>
     <transition name="fade">
-      <detail class="detail-dialog" v-if="pointVisible" :point="point" @close="closeDetail"></detail>
+      <detail class="detail-dialog" v-if="pointVisible" :point="point" :button="button" @close="closeDetail"></detail>
     </transition>
   </div>
 </template>
 
 <script>
 import Detail from './detail'
+import { download } from '@/common/utils'
+import { getToken } from '@/common/utils/auth'
 import { getDeptList } from '@/api/system'
-import { getPointPage, insertPointDept, deletePointDept } from '@/api/datum'
+import { getPointPage, insertPointDept, deletePointDept, downloadTemplate } from '@/api/datum'
 
 export default {
   data () {
     return {
+      baseUrl: process.env.BASE_API,
+      headers: {
+        'X-Token': getToken()
+      },
+      button: {},
       deptList: [],
       deptId: null,
       pointDept: {
@@ -104,6 +131,8 @@ export default {
         pointList: [], // 未绑定区域的监测点
         pointKeys: [] // 选中的监测点ID数组
       },
+      templateVisible: false,
+      fileList: [],
       selectVisible: false,
       point: {},
       pointVisible: false
@@ -119,6 +148,27 @@ export default {
     changeQuery () {
       this._getPointListDept()
     },
+    uploadTemplate () {
+      this.$refs.upload.submit()
+    },
+    onSuccess (res) {
+      if (res.code === 1) {
+        this.$message({
+          message: res.msg,
+          type: 'success'
+        })
+        this.fileList = []
+        this.templateVisible = false
+      } else {
+        this.fileList = []
+        this.$message.error(res.msg)
+      }
+    },
+    downloadTemplate () {
+      downloadTemplate().then(res => {
+        download(res, '源数据采集.xlsx')
+      })
+    },
     selectPoint () {
       this._getPointListNone()
       this.selectVisible = true
@@ -132,14 +182,14 @@ export default {
     },
     handleSizeChange (val) {
       if (this.selectVisible) {
-        if (val > this.pageSize) {
-          this.pointNone.currentPage = Math.ceil(this.totalRecode / val)
+        if (val > this.pointNone.pageSize) {
+          this.pointNone.currentPage = Math.ceil(this.pointNone.totalRecode / val)
         }
         this.pointNone.pageSize = val
         this._getPointListNone()
       } else {
-        if (val > this.pageSize) {
-          this.pointDept.currentPage = Math.ceil(this.totalRecode / val)
+        if (val > this.pointDept.pageSize) {
+          this.pointDept.currentPage = Math.ceil(this.pointDept.totalRecode / val)
         }
         this.pointDept.pageSize = val
         this._getPointListDept()
@@ -193,6 +243,7 @@ export default {
       })
     },
     _initData () {
+      Object.assign(this.button, this.$route.meta.button)
       getDeptList(null, true).then(res => {
         this.deptList = res.data
         if (this.deptList.length === 1) {
@@ -210,7 +261,6 @@ export default {
 
 <style lang="stylus" scoped>
 .point-container
-  height calc(100vh - 40px)
   .head-wrapper
     position relative
     padding 0 10px
@@ -247,4 +297,6 @@ export default {
     left 0
     z-index 1000
     height calc(100vh - 40px)
+  .upload-detail
+    padding-bottom 20px
 </style>

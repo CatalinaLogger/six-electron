@@ -79,10 +79,10 @@ export function dynamicRouters (authTree, parent, meta, src, level) {
         dynamicRouters(record.children, tmp.children, tmp.meta, `${src}${record.path}/`, _level)
       }
     } else {
-      if (!meta.buttons) {
-        meta.buttons = []
+      if (!meta.button) {
+        meta.button = {}
       }
-      meta.buttons.push({type: record.type, hidden: record.hidden === 1, path: record.path, name: record.name, icon: record.icon})
+      meta.button[record.path] = {hidden: record.hidden === 1, name: record.name, icon: record.icon}
     }
   })
   return routers

@@ -136,3 +136,29 @@
     white-space nowrap
     text-overflow ellipsis
     overflow hidden
+
+.six-tabs
+  .el-tabs__header
+    margin 0 0 10px
+  .el-tabs__active-bar
+    height 1px
+  .el-tabs__item
+    color white
+    &.is-active
+      font-weight bold
+      color #409EFF
+  .el-tabs__nav-wrap::after
+    height 1px
+
+.vue-waterfall-easy-scroll
+  &::-webkit-scrollbar/*滚动条整体样式*/
+    width 0px     /*高宽分别对应横竖滚动条的尺寸*/
+    height 0px
+  &::-webkit-scrollbar-thumb/*滚动条里面小方块*/
+    border-radius 10px
+    -webkit-box-shadow inset 0 0 5px rgba(0,0,0,0.2);
+    background #606266
+  &::-webkit-scrollbar-track/*滚动条里面轨道*/
+    -webkit-box-shadow inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius 10px
+    background #EDEDED
