@@ -59,7 +59,7 @@ export default {
           this.$store.dispatch('Login', this.loginModel).then(() => {
             this.loading = false
             this.show = false
-            this.$router.push({ path: '/' })
+            this.$router.push({ path: '/cockpit' })
           }).catch(() => {
             this.loading = false
           })
@@ -74,12 +74,12 @@ export default {
       let BrowserWindow = this.$electron.remote.BrowserWindow
       let forget = new BrowserWindow({
         parent: main,
-        title: '密码找回',
+        title: '北斗微芯',
         useContentSize: true,
         autoHideMenuBar: true
       })
       forget.show()
-      forget.loadURL('http://localhost:3000/reset')
+      forget.loadURL('http://cloud.bdsmc.net')
       forget.on('closed', () => {
         forget = null
       })

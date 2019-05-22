@@ -9,21 +9,6 @@ export const constantRouters = [
     path: '/login',
     component: require('@/views/login').default,
     hidden: true
-  },
-  {
-    path: '',
-    component: Layout,
-    redirect: 'dashboard',
-    children: [{
-      path: 'dashboard',
-      component: require('@/views/cockpit').default,
-      meta: {type: 1, title: '控制台', icon: 'dashboard'}
-    }]
-  },
-  {
-    path: '*',
-    redirect: '/',
-    hidden: true
   }
 ]
 
@@ -37,6 +22,7 @@ export default new Router({
  * 递归处理权限树动态生成路由
  */
 export function dynamicRouters (authTree, parent, meta, src, level) {
+  if (!src) { src = '' }
   let routers = []
   authTree.forEach(function (record) {
     if (record.type !== 3) { /** 如果不是按钮 */

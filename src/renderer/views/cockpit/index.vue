@@ -3,7 +3,8 @@
     <img class="map-bg" src="/static/images/map.svg" alt="">
     <div class="header">
       <!--<chart class="earth" :class="{'show': earthShow}" :option="optionEarth"></chart>-->
-      <div class="title">宁乡市北斗地灾预警系统和应急指挥中心</div>
+      <div class="title">北斗铁路固定设施检测系统</div>
+      <el-button type="text" style="-webkit-app-region: no-drag; margin-top: 10px" @click="handleForget">网页登录</el-button>
       <div class="message">
         <div class="text-wrapper">
           <transition name="roll-transform" mode="out-in">
@@ -17,39 +18,78 @@
       </div>
     </div>
     <div class="content">
+      <div class="left">
+        <block :style="{'height': height + 'px'}" style="min-height: 324px">
+          <arrow :size="15"></arrow>
+          <div class="head">检测统计</div>
+          <div class="info">监测点数量<span class="number">{{infoModel.warn}}</span>个</div>
+          <div class="info">红色预警<span class="number">{{infoModel.red}}</span>个</div>
+          <div class="info">橙色预警<span class="number">{{infoModel.orange}}</span>个</div>
+          <div class="body">
+            <chart :option="optionWarn"></chart>
+          </div>
+        </block>
+        <block :style="{'height': height + 'px'}" style="min-height: 324px">
+          <div class="head">数据流向示意</div>
+          <div class="body">
+            <chart :option="optionGraph"></chart>
+          </div>
+        </block>
+      </div>
       <div class="center">
-        <block class="map">
-          <div class="head"><svg-icon icon-class="warn"></svg-icon><span class="label">隐患点预警等级分布</span></div>
+        <block :style="{'height': height + 150 + 'px'}" style="min-height: 474px">
+          <div class="head"><svg-icon icon-class="warn"></svg-icon><span class="label">监测点分布示意图</span></div>
           <chart class="level" :option="optionMap" @click="clickPoint"></chart>
+        </block>
+        <block :style="{'height': height - 150 + 'px'}" style="min-height: 174px">
+          <arrow :size="30"></arrow>
+          <div class="head">{{timeTitle}}</div>
+          <div class="body">
+            <chart :option="optionTime"></chart>
+          </div>
         </block>
       </div>
       <div class="right">
-        <block class="level">
-          <div class="row">
-            <div class="col">等级</div><div class="col">四级预警</div><div class="col">三级预警</div><div class="col">二级预警</div><div class="col">一级预警</div>
-          </div>
-          <div class="row">
-            <div class="col">颜色</div><div class="col level-2">蓝色</div><div class="col level-3">黄色</div><div class="col level-4">橙色</div><div class="col level-5">红色</div>
-          </div>
-          <div class="row">
-            <div class="col">数量</div><div class="col level-2">{{warnNum[1]}}</div><div class="col level-3">{{warnNum[2]}}</div><div class="col level-4">{{warnNum[3]}}</div><div class="col level-5">{{warnNum[4]}}</div>
-          </div>
-          <div class="row">
-            <div class="col">方案</div><div class="col">正常</div><div class="col">加强观察、观测</div><div class="col">暂停活动，排除险情恢复</div><div class="col">全部撤离，并警戒</div>
+        <block style="height: 170px">
+          <arrow></arrow>
+          <div class="head">监测数据统计</div>
+          <div class="body count">
+            <div class="outside">
+              <div class="inside">
+                {{infoModel.total}}
+                <div class="title">总数据量</div>
+                <div class='corner left-top'></div>
+                <div class='corner right-top'></div>
+                <div class='corner right-bottom'></div>
+                <div class='corner left-bottom'></div>
+              </div>
+            </div>
+            <div class="outside">
+              <div class="inside">
+                {{infoModel.today}}
+                <div class="title">今日数据</div>
+                <div class='corner left-top'></div>
+                <div class='corner right-top'></div>
+                <div class='corner right-bottom'></div>
+                <div class='corner left-bottom'></div>
+              </div>
+            </div>
           </div>
         </block>
-        <block class="warn" :class="'level-' + warnNew[0].level" v-if="warnNew[0]" @click="showMap(warnNew[0])">
-          <div class="warn-head">{{warnArr[warnNew[0].level]}}</div>
-          <div class="warn-body">{{warnNew[0].address}}</div>
-          <div class="warn-foot">{{warnNew[0].time}}</div>
+        <block class="level" style="height: 200px">
+          <div class="row">
+            <div class="col">四级预警</div><div class="col">三级预警</div><div class="col">二级预警</div><div class="col">一级预警</div>
+          </div>
+          <div class="row">
+            <div class="col level-2">蓝色</div><div class="col level-3">黄色</div><div class="col level-4">橙色</div><div class="col level-5">红色</div>
+          </div>
+          <div class="row">
+            <div class="col">正常</div><div class="col">加强观察、观测</div><div class="col">暂停活动，排除险情恢复</div><div class="col">全部撤离，并警戒</div>
+          </div>
         </block>
-        <block class="warn" v-else>
-          <div class="warn-head"></div>
-          <div class="warn-body">所有监测点均正常</div>
-          <div class="warn-foot"></div>
-        </block>
-        <block class="list">
-          <div class="head" @click="toLink('/datum/point')">隐患点列表</div>
+        <block :style="{'height': height * 2 - 380 + 'px'}" style="min-height: 268px">
+          <arrow></arrow>
+          <div class="head" @click="toLink('/datum/point')">监测点列表</div>
           <el-scrollbar class="body point" wrap-class="scrollbar-wrapper">
             <div class="row" :class="'level-' + item.level" v-for="item in pointList" :key="item.id" @click="showMap(item)">{{item.name}}&nbsp;&nbsp;&nbsp;&nbsp;{{item.address}}</div>
           </el-scrollbar>
@@ -72,7 +112,7 @@ import MapInfo from './map-info'
 import { mapGetters } from 'vuex'
 import { weather } from '@/api/amap'
 import { getPointPage } from '@/api/datum'
-import { getNxJson } from '@/api/cockpit'
+import { getDevice, getDeviceData, getOnline, getCount, getNxJson } from '@/api/cockpit'
 
 export default {
   data () {
@@ -81,18 +121,34 @@ export default {
       height: 0,
       now: '',
       earthShow: false,
+      timeTitle: '',
+      optionTime: {},
+      optionGraph: {},
       optionEarth: {},
       optionMap: {},
+      optionSar: {},
+      optionWarn: {}, // 监测预警分布图
+      optionDevice: {}, // 设备在线掉线直方图
+      optionType: {}, // 监测点、设备类型数量饼图
+      showType: true,
       poiType: [],
       devType: [],
       rollList: [], // 顶部滚动输出列表
       notice: null, // 当前顶部显示文字
       pointList: [],
       point: {},
+      devList: [],
       index: null,
-      warnArr: ['数据缺失', '蓝色预警', '黄色预警', '橙色预警', '红色预警'],
-      warnNew: [], // 新的预警数据
-      warnNum: [] // 统计各个预警等级的数量
+      infoModel: {
+        warn: 0,
+        red: 0,
+        orange: 0,
+        point: 0,
+        online: 0,
+        offline: 0,
+        total: null, // 总数据量
+        today: null // 今日数据
+      }
     }
   },
   computed: {
@@ -115,6 +171,21 @@ export default {
     this._clearData()
   },
   methods: {
+    handleForget () {
+      let main = this.$electron.remote.getCurrentWindow()
+      let BrowserWindow = this.$electron.remote.BrowserWindow
+      let forget = new BrowserWindow({
+        parent: main,
+        title: '北斗微芯',
+        useContentSize: true,
+        autoHideMenuBar: true
+      })
+      forget.show()
+      forget.loadURL('http://cloud.bdsmc.net')
+      forget.on('closed', () => {
+        forget = null
+      })
+    },
     logout () {
       let main = this.$electron.remote.getCurrentWindow()
       main.destroy()
@@ -140,6 +211,165 @@ export default {
       }).length
       if (size > 0) {
         this.$router.push(point)
+      }
+    },
+    drawChart () {
+      this.optionGraph = {
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+          {
+            type: 'graph',
+            left: '25%',
+            right: '25%',
+            layout: 'none',
+            symbolSize: 50,
+            roam: true,
+            label: {
+              normal: {
+                show: true
+              }
+            },
+            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbolSize: [4, 10],
+            edgeLabel: {
+              normal: {
+                textStyle: {
+                  fontSize: 16
+                }
+              }
+            },
+            data: [
+              {name: 'GNSS', x: 0, y: 1, symbol: 'roundRect', itemStyle: {color: '#E6A23C'}},
+              {name: '宽带卫星', x: 1, y: 0},
+              {name: '4G网络', x: 1, y: 1},
+              {name: '数据中心', x: 2, y: 1, symbol: 'rect'},
+              {name: '解算', x: 2, y: 2, symbol: 'diamond'},
+              {name: '平台预警', x: 1, y: 2, symbol: 'rect'},
+              {name: '短信通知', x: 0, y: 2},
+              {name: '用户', x: 1, y: 3, symbol: 'roundRect', itemStyle: {color: '#E6A23C'}}
+            ],
+            links: [
+              {source: 'GNSS', target: '4G网络', lineStyle: {color: '#49c7d9'}},
+              {source: 'GNSS', target: '宽带卫星', lineStyle: {color: '#49c7d9'}},
+              {source: '4G网络', target: '数据中心', lineStyle: {color: '#49c7d9'}},
+              {source: '宽带卫星', target: '数据中心', lineStyle: {color: '#49c7d9'}},
+              {source: '数据中心', target: '解算', lineStyle: {color: '#49c7d9'}},
+              {source: '解算', target: '平台预警', lineStyle: {color: '#49c7d9'}},
+              {source: '平台预警', target: '短信通知', lineStyle: {color: '#49c7d9'}},
+              {source: '短信通知', target: '用户', lineStyle: {color: '#49c7d9'}}
+            ],
+            lineStyle: {
+              normal: {
+                opacity: 0.9,
+                width: 2,
+                curveness: 0
+              }
+            },
+            itemStyle: {
+              color: '#409EFF'
+            }
+          }
+        ]
+      }
+      this.optionEarth = {
+        globe: {
+          baseTexture: '/static/images/earth.jpg',
+          heightTexture: '/static/images/earth.jpg',
+          displacementScale: 0.04,
+          shading: 'realistic',
+          realisticMaterial: {
+            roughness: 0.9
+          },
+          postEffect: {
+            enable: true
+          },
+          light: {
+            main: {
+              intensity: 5,
+              shadow: true
+            },
+            ambientCubemap: {
+              diffuseIntensity: 0.2
+            }
+          }
+        }
+      }
+      setTimeout(() => {
+        this.earthShow = true
+      }, 1000)
+      this.optionWarn = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b} <br/>{c} ({d}%)'
+        },
+        series: [{
+          type: 'pie',
+          radius: ['0', '50%'],
+          center: ['50%', '60%'],
+          label: {
+            formatter: ['{b}', '{d}%'].join('\n')
+          },
+          data: []
+        }]
+      }
+      this.optionType = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b} <br/>{c} ({d}%)'
+        },
+        series: [{
+          type: 'pie',
+          radius: ['0', '50%'],
+          center: ['50%', '60%'],
+          label: {
+            formatter: ['{b}', '{d}%'].join('\n')
+          },
+          data: []
+        }]
+      }
+      this.optionDevice = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}'
+        },
+        grid: {
+          left: 10,
+          top: 15,
+          right: 5,
+          bottom: 5,
+          containLabel: true
+        },
+        xAxis: {
+          splitLine: {show: false},
+          splitArea: {show: false},
+          axisLabel: {
+            interval: 0
+          },
+          type: 'category',
+          data: []
+        },
+        yAxis: {
+          splitLine: {show: false},
+          splitArea: {show: false},
+          type: 'value'
+        },
+        series: [
+          {
+            name: '在线',
+            type: 'bar',
+            label: {normal: {show: true, position: 'top'}},
+            itemStyle: {color: '#67C23A'},
+            data: []
+          },
+          {
+            name: '离线',
+            type: 'bar',
+            label: {normal: {show: true, position: 'top'}},
+            itemStyle: {color: '#F56C6C'},
+            data: []
+          }
+        ]
       }
     },
     formatWeek (week) {
@@ -181,6 +411,7 @@ export default {
       let getPointList = (index) => {
         if (!index) {
           index = 0
+          this.infoModel.warn = 0
         }
         index++
         getPointPage(true, null, 0, null, index, 100).then(res => {
@@ -189,6 +420,7 @@ export default {
               this.pointList = []
             }
             this.pointList = this.pointList.concat(res.data.data)
+            this.deviceData()
             getPointList(index)
           } else {
             let dataList = []
@@ -196,11 +428,23 @@ export default {
             this.pointList.sort((a, b) => {
               return a.name - b.name
             })
-            let warnNew = []
             this.pointList.forEach(item => {
-              if (item.level > 1) {
-                warnNew.push(item)
-              }
+              // if (item.level > 0) {
+              //   this.infoModel.warn++
+              // }
+              // if (!dataList[item.level - 1]) {
+              //   dataList[item.level - 1] = []
+              // }
+              // dataList[item.level - 1].push({
+              //   name: item.name,
+              //   value: [item.lng, item.lat, item.id]
+              // })
+              // if (!typeList[item.typeId - 1]) {
+              //   typeList[item.typeId - 1] = {value: 1, name: item.typeName}
+              // } else {
+              //   typeList[item.typeId - 1].value = typeList[item.typeId - 1].value + 1
+              // }
+              this.infoModel.warn++
               if (!dataList[item.level]) {
                 dataList[item.level] = []
               }
@@ -214,15 +458,13 @@ export default {
                 typeList[item.typeId].value = typeList[item.typeId].value + 1
               }
             })
-            this.warnNew = warnNew
-            console.log(this.warnNew)
-            this.warnNum = [
-              dataList[0] ? dataList[0].length : 0,
-              dataList[1] ? dataList[1].length : 0,
-              dataList[2] ? dataList[2].length : 0,
-              dataList[3] ? dataList[3].length : 0,
-              dataList[4] ? dataList[4].length : 0
-            ]
+            if (dataList[5]) {
+              this.infoModel.red = dataList[5].length
+            }
+            if (dataList[4]) {
+              this.infoModel.orange = dataList[4].length
+            }
+            this.infoModel.point = this.pointList.length
             let top = true
             let mapSeries = []
             let warnSeriesData = []
@@ -231,7 +473,7 @@ export default {
               let data = dataList[i]
               if (data) {
                 warnSeriesData.push({value: data.length, name: levels[i].name, type: i + 1, itemStyle: {color: levels[i].color}})
-                if (top && i !== 1) {
+                if (top) {
                   top = false
                   mapSeries.push({
                     name: levels[i].name,
@@ -261,9 +503,6 @@ export default {
                     zlevel: i + 1
                   })
                 } else {
-                  if (top) {
-                    top = false
-                  }
                   mapSeries.push({
                     name: levels[i].name,
                     type: 'scatter',
@@ -291,11 +530,52 @@ export default {
               }
             }
             this.$set(this.optionMap, 'series', mapSeries)
+            this.$set(this.optionWarn.series[0], 'data', warnSeriesData)
+            this.poiType = typeList
+            this.$set(this.optionType.series[0], 'data', typeList)
           }
         })
       }
       getPointList(0)
       this.pointTimer = setInterval(getPointList, 1000 * 60 * 10)
+
+      /** 设备在线数据 */
+      let getOnlineList = () => {
+        this.infoModel.online = 0
+        this.infoModel.offline = 0
+        getOnline().then(res => {
+          if (res) {
+            let name = []
+            let online = []
+            let offline = []
+            let typeList = []
+            res.forEach(item => {
+              name.push(item.name)
+              online.push(item.online + item.gnssonline)
+              offline.push(item.offline)
+              typeList.push({value: item.online + item.gnssonline + item.offline, name: item.name})
+              this.infoModel.online += item.online + item.gnssonline
+              this.infoModel.offline += item.offline
+            })
+            this.$set(this.optionDevice.xAxis, 'data', name)
+            this.$set(this.optionDevice.series[0], 'data', online)
+            this.$set(this.optionDevice.series[1], 'data', offline)
+            this.devType = typeList
+          }
+        })
+      }
+      getOnlineList()
+      this.onlineTimer = setInterval(getOnlineList, 1000 * 60 * 30)
+
+      /** 监测数据 */
+      let getCountInfo = () => {
+        getCount(this.index).then(res => {
+          this.infoModel.total = res.total
+          this.infoModel.today = res.total_today
+        })
+      }
+      getCountInfo()
+      this.countIimer = setInterval(getCountInfo, 10000)
     },
     _showData () {
       let formatNow = () => {
@@ -314,19 +594,117 @@ export default {
 
           let point = this.pointList.shift()
           this.pointList.push(point)
-
-          let warn = this.warnNew.shift()
-          this.warnNew.push(warn)
         }, 300)
       }
       running()
       this.rollTimer = setInterval(running, 5000)
+
+      this.switchTimer = setInterval(() => {
+        this.showType = !this.showType
+        this.$set(this.optionType.series[0], 'data', this.showType ? this.poiType : this.devType)
+      }, 10000)
+    },
+    deviceData () {
+      let device = () => {
+        let list = []
+        this.pointList.forEach(item => {
+          getDevice(item.id).then(devList => {
+            for (let key in devList) {
+              getDeviceData(devList[key].Mac, 30).then(res => {
+                if (!res) return
+                let time = res.map(item => {
+                  return item.gps_time
+                })
+                devList[key].Sensors.forEach(sens => {
+                  let yData = res.map(item => {
+                    return item[sens.ColName]
+                  })
+                  if (yData.length) {
+                    list.push({name: `${devList[key].Name}--${sens.Name}`, time: time, data: yData})
+                  }
+                })
+              })
+            }
+          })
+        })
+        this.devList = list
+      }
+      device()
+      this.deviceTimer = setInterval(device, 50000)
+      this.devIndex = 0
+      setInterval(() => {
+        let data = this.devList[this.devIndex]
+        this.drawTime(data.name, data.time, data.data)
+        this.devIndex = this.devIndex + 1
+        if (this.devIndex >= this.devList.length) {
+          this.devIndex = 0
+        }
+      }, 5000)
+    },
+    drawTime (title, xData, yData) {
+      this.timeTitle = title
+      this.optionTime = {
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          splitLine: {
+            show: false
+          },
+          splitArea: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#409EFF'
+            }
+          },
+          data: xData
+        },
+        yAxis: {
+          type: 'value',
+          boundaryGap: false,
+          splitLine: {
+            show: false
+          },
+          splitArea: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#409EFF'
+            }
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '2%',
+          bottom: '5%',
+          top: '3%',
+          containLabel: true
+        },
+        series: [{
+          type: 'line',
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            width: 3,
+            color: '#f4e925'
+          },
+          data: yData
+        }]
+      }
     },
     _clearData () {
       clearInterval(this.weatherTimer)
       clearInterval(this.pointTimer)
+      clearInterval(this.onlineTimer)
+      clearInterval(this.countIimer)
       clearInterval(this.dateTimer)
       clearInterval(this.rollTimer)
+      clearInterval(this.switchTimer)
+      clearInterval(this.deviceTimer)
     },
     _initJson () {
       getNxJson().then(res => {
@@ -355,10 +733,11 @@ export default {
                 areaColor: '#2a333d'
               }
             },
-            zoom: 1.2
+            zoom: 1
           },
           series: []
         }
+        this.drawChart()
         setTimeout(() => {
           this._initData()
           this._showData()
@@ -411,7 +790,7 @@ $gray = #909399
         opacity 1
     .title
       line-height 60px
-      font-size 23px
+      font-size 25px
       letter-spacing 2px
       color #327CC8
     .message
@@ -444,8 +823,11 @@ $gray = #909399
     margin-top -10px
     padding 0 5px
     height calc(100vh - 60px)
+    .left
+      flex 3
+      padding 0px 5px
     .center
-      flex 2
+      flex 6
       padding 0px 5px
       .head
         .svg-icon
@@ -463,11 +845,55 @@ $gray = #909399
       .level
         position absolute
         top 0
-      .map
-        height calc(100vh - 70px)
     .right
-      flex 1
+      flex 4
       padding 0px 5px
+      .count
+        padding 0px 10px 0
+        display flex
+        align-items center
+        .outside
+          flex 1
+          padding 0 20px
+          .inside
+            position relative
+            height 60px
+            font-size 22px
+            font-weight bold
+            line-height 60px
+            text-align center
+            color #49c7d9
+            box-shadow inset 0 0 1px #077ccb
+            .title
+              position absolute
+              left 0
+              top 0
+              margin-top -20px
+              line-height 14px
+              font-size 14px
+              color #3685FE
+            .corner
+              position absolute
+              width 10px
+              height 10px
+              &.left-top
+                top 0
+                border-left $borderSize solid #49c7d9 !important
+                border-top $borderSize solid #49c7d9 !important
+              &.right-top
+                top 0
+                right 0
+                border-top $borderSize solid #49c7d9 !important
+                border-right $borderSize solid #49c7d9 !important
+              &.right-bottom
+                right 0
+                bottom 0
+                border-right $borderSize solid #49c7d9 !important
+                border-bottom $borderSize solid #49c7d9 !important
+              &.left-bottom
+                bottom 0
+                border-left $borderSize solid #49c7d9 !important
+                border-bottom $borderSize solid #49c7d9 !important
       .level
         .row
           display table
@@ -490,9 +916,6 @@ $gray = #909399
             font-weight bold
             border-right 1px solid #077ccb
             border-bottom 1px solid #077ccb
-            &:first-child
-              color #5094f0
-              font-weight bold
             &:last-child
               border-right none
           .level-1
@@ -505,36 +928,6 @@ $gray = #909399
             color $orange
           .level-5
             color $red
-      .warn
-        height 25vh
-        text-align center
-        color #5094f0
-        &.level-0
-          color $gray
-          box-shadow inset 0 0 20px $gray
-        &.level-1
-          color $blue
-          box-shadow inset 0 0 20px $blue
-        &.level-2
-          color $yellow
-          box-shadow inset 0 0 20px $yellow
-        &.level-3
-          color $orange
-          box-shadow inset 0 0 20px $orange
-        &.level-4
-          color $red
-          box-shadow inset 0 0 20px $red
-        .warn-head
-          height 8vh
-          line-height 8vh
-        .warn-body
-          height 9vh
-          line-height 9vh
-        .warn-foot
-          height 8vh
-          line-height 8vh
-      .list
-        height calc(100vh - 25vh - 340px)
       .point
         .row
           padding-left 20%

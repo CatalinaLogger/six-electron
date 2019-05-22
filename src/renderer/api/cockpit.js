@@ -32,7 +32,7 @@ export function getDeviceData (mac, num) {
     url: 'http://cloud.bdsmc.net:8006/devicedata',
     method: 'get',
     params: {
-      mac,
+      mac: mac.toLowerCase(),
       num,
       frontend: 'web'
     }
@@ -61,14 +61,14 @@ export function getSarList (color) {
 
 export function getNxJson () {
   return request({
-    url: 'static/json/nx.json',
+    url: 'static/json/xs.json',
     method: 'get'
   })
 }
 
 export function getSarJson () {
   return request({
-    url: 'static/json/sar.json',
+    url: 'static/json/xsar.json',
     method: 'get'
   })
 }

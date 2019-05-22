@@ -58,19 +58,22 @@
           <div>[ {{result.lat.toFixed(6)}}, {{result.lng.toFixed(6)}} ]</div>
         </div>
       </div>
-      <el-tabs class="six-tabs" v-model="chartTab">
-        <el-tab-pane label="历史预警统计" name="line">
-          <div class="chart"><chart :option="optionLine"></chart></div>
-        </el-tab-pane>
+      <el-tabs class="six-tabs" v-model="chartTab" @tab-click="tabClick">
         <el-tab-pane label="监测点现场" name="photo">
           <photo :point="result" v-if="chartTab === 'photo'"></photo>
+        </el-tab-pane>
+        <el-tab-pane label="历史预警统计" name="line">
+          <div class="chart"><chart :option="optionLine"></chart></div>
         </el-tab-pane>
         <el-tab-pane v-if="labelTime" :label="labelTime" name="time">
           <div class="chart"><chart :option="optionTime"></chart></div>
         </el-tab-pane>
       </el-tabs>
       <el-tabs class="six-tabs" v-model="deviceTab">
-        <el-tab-pane label="实时数据监测" name="data">
+        <el-tab-pane label="当前预警等级" name="level">
+          <div class="warn-info">{{warnLevel[result.level]}}</div>
+        </el-tab-pane>
+        <el-tab-pane label="实时数据监测" name="data" v-if="button.data">
           <el-scrollbar class="detail-container" wrap-class="scrollbar-wrapper">
             <div class="device-wrapper">
               <div class="device-item" v-for="dev in deviceList" v-if="dev.data && dev.Type !== 12 && dev.Type !== 13 && showDevice(dev)">
@@ -143,6 +146,7 @@ export default {
   },
   data () {
     return {
+      button: {},
       baseUrl: process.env.BASE_API,
       map: {},
       center: [],
@@ -162,8 +166,8 @@ export default {
       resultVisible: false,
       detail: false, // 是否展开详情
       picker: [],
-      chartTab: 'line',
-      deviceTab: 'data',
+      chartTab: 'photo',
+      deviceTab: 'level',
       optionLine: null,
       optionTime: null,
       labelTime: null,
@@ -172,7 +176,7 @@ export default {
       message: '',
       intervalData: null,
       intervalTime: null,
-      warnLevel: ['蓝色预警：正常', '黄色预警：加强观察、观测', '橙色预警：暂停活动，排除险情恢复', '红色预警：全部撤离，并警戒'],
+      warnLevel: ['', '蓝色预警：正常', '黄色预警：加强观察、观测', '橙色预警：暂停活动，排除险情恢复', '红色预警：全部撤离，并警戒'],
       pointInfo: {},
       showSar: false,
       layerSar: null,
@@ -185,14 +189,21 @@ export default {
     ])
   },
   mounted () {
+    this.button = this.$route.meta.button
     let lonLat = wgsToGcj(this.point.lng, this.point.lat)
-    this.result = this.point
+    this.result = {}
+    Object.assign(this.result, this.point)
     this.result.lng = lonLat[0]
     this.result.lat = lonLat[1]
     this.center = [lonLat[1], lonLat[0]]
     this.getAddress()
   },
   methods: {
+    tabClick (tab) {
+      if (tab.name === 'line' && !this.optionLine) {
+        this._getPointLevelList()
+      }
+    },
     clickResult (data) {
       if (data.level > -1) {
         let lonLat = wgsToGcj(data.lng, data.lat)
@@ -236,7 +247,6 @@ export default {
       // let tooltip = L.tooltip({direction: 'bottom', permanent: true, offset: L.point(0, 0)}).setContent(result.address)
       // this.marker.bindTooltip(tooltip).openTooltip()
       this.marker.on('click', () => {
-        this._getPointLevelList()
         this._getDevice()
         this._getPointInfo()
         this.resultVisible = true
@@ -285,15 +295,6 @@ export default {
           }
         })
       })
-    },
-    lookDevice () {
-      let size = this.roles.filter(item => {
-        return item.id < 4
-      }).length
-      if (size > 0) {
-        return true
-      }
-      return false
     },
     showDevice (dev) {
       let size = 0
@@ -741,6 +742,9 @@ $back-color = #409eff
   color white
   overflow hidden
   z-index 10000
+  .warn-info
+    padding-top 20%
+    text-align center
   .info-wrapper
     display flex
     text-align center
